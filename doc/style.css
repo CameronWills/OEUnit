@@ -1,0 +1,81 @@
+body
+{
+	font-family: Tahoma, Verdana, Helvetica, Arial, sans-serif;
+	font-size: 10pt;
+	color:Black;
+	line-height:1.5em;
+}
+
+.pageHeading, .sectionHeading
+{
+	font-family: Verdana, Helvetica, Arial, sans-serif;
+	font-weight:bold;
+	border-bottom: 1 solid #A0B4E0;
+	margin-bottom:5px;
+	text-indent:8pt;
+}
+.pageHeading {font-size: 16pt}
+.sectionHeading{font-size: 13pt; text-decoration: underline;}
+.pageFooting{font-size: 8pt; text-align:right}
+
+
+.headingRule
+{
+	border-style:none;
+	border-top: 1px solid #999999;
+	height:0px;
+	color:#999999;
+	width:100%;
+}
+
+.menu
+{
+	background-color: #F7F7F7; 
+	border-right: silver 1px solid; 
+	border-top: silver 1px solid; 
+	border-left: silver 1px solid; 
+	border-bottom: silver 1px solid;
+}
+
+.menuItems
+{
+	line-height:1.4;
+}
+
+.topLink
+{
+	font-weight:normal;
+	font-family: Tahoma, Verdana, Helvetica, Arial, sans-serif;
+	font-size: 8pt;
+}
+
+.code
+{
+	margin-left:25px;
+	border-left: solid 8pt #CCCCCC;
+}
+
+.syntax
+{
+	margin-left:25px;
+}
+
+.important
+{
+	color:#CC0000;
+}
+
+.keyword
+{
+  color:rgb(74,77,255);
+}
+
+.literal
+{
+  color:rgb(0,130,132);
+}
+
+.comment
+{
+  color:rgb(0,195,0);
+}

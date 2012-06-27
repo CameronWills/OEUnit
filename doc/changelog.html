@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <title>OEUnit - Change Log</title>
+</head>
+<body>
+    <a id="top" />
+    <div class="pageHeading">
+        Change Log<hr class="headingRule" />
+    </div>
+    <br />
+    <table class="menu" cellpadding="10" cellspacing="0">
+        <tr>
+            <td style="width: 360px" valign="top">
+                <b>OEUnit - Unit Testing Framework</b>
+                <ul class="menuItems">
+                    <li><a href="license.html">License</a></li>
+                    <li>Change Log
+                        <ul class="menuItems">
+                            <li><a href="#section1">Change Log</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="index.html">Overview</a></li>
+                    <li><a href="installation.html">Installation</a></li>
+                    <li><a href="testcase.html">Writing a Test Case</a></li>
+                    <li><a href="testsuite.html">Writing a Test Suite</a></li>
+                    <li><a href="runningtests.html">Running a Test</a></li>
+                    <li><a href="advanced.html">Advanced</a></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <br />
+    <br />
+    <a id="section1" /><span class="sectionHeading">Change Log</span> &nbsp;&nbsp;<a
+        class="topLink" href="#top">Top</a>
+    <p><b>1.2</b></p>
+    <ul>
+       <li>OEUnit 1.2 requires OpenEdge 10.2b </li>
+       <li>Changes to show the error message returned from simple RETURN ERROR "error message" statements</li>
+       <li>Updated UI/ResultsWindow.w to show 'RUNNING' while tests are running</li>
+       <li>Increased the default height & width of the UI/DetailsWindow.w and improved general readability</li>
+       <li>Updated code to use the new ABSTRACT keyword introduced in OpenEdge 10.2b</li>
+	     <li>Updated Reflection/MethodInfo.cls to use the new DYNAMIC-INVOKE function introduced in OpenEdge 10.2b - removed Util/CallMethod.p</li>
+	     <li>Updated Runner/BaseRunner.cls to use the new EVENT keyword introduced in OpenEdge 10.2b</li>
+	     <li>Simplified interfaces for Util/List.cls and Util/IComparator.cls</li>
+	     <li>Added a change log to the project documentation</li>
+    </ul>
+    <p><b>1.1 Beta</b></p>
+    <ul>
+	     <li>Added changes to support the OpenEdge 10.2a runtime</li>
+	     <li>Corrected the method modifiers in UI/ResultsWindowView.cls - causing compile time errors in 10.2a, but was somehow working in 10.1c ?</li>
+	     <li>Fixed bug in Remove() method of Util/List.cls - elements were being re-indexed incorrectly</li>
+    </ul>
+    <p><b>1.0 Beta</b></p>
+    <ul>
+	     <li>Initial release - basic functionality to run test cases and suites.</li>
+    </ul>
+    <br />
+    <div class="pageFooting">
+        <hr class="headingRule" align="left" />
+        Cameron Wills, 2011.</div>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <title>OEUnit - Installation</title>
+</head>
+<body>
+    <a id="top" />
+    <div class="pageHeading">
+        Installation<hr class="headingRule" />
+    </div>
+    <br />
+    <table class="menu" cellpadding="10" cellspacing="0">
+        <tr>
+            <td style="width: 360px" valign="top">
+                <b>OEUnit - Unit Testing Framework</b>
+                <ul class="menuItems">
+                    <li><a href="license.html">License</a></li>
+                    <li><a href="changelog.html">Change Log</a></li>
+                    <li><a href="index.html">Overview</a></li>
+                    <li>Installation
+                        <ul class="menuItems">
+                            <li><a href="#section1">1. Extract the archive</a></li>
+                            <li><a href="#section2">2. Add an entry to PROPATH</a></li>
+                            <li><a href="#section3">3. Add the -errorstack startup parameter</a></li>
+                            <li><a href="#section4">4. Add a Menu Action to OpenEdge Architect</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="testcase.html">Writing a Test Case</a></li>
+                    <li><a href="testsuite.html">Writing a Test Suite</a></li>
+                    <li><a href="runningtests.html">Running a Test</a></li>
+                    <li><a href="advanced.html">Advanced</a></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <br />
+    <br />
+    <a id="section1" /><span class="sectionHeading">1. Extract the archive</span>
+    &nbsp;&nbsp;<a class="topLink" href="#top">Top</a>
+    <p>
+        Once you have <a href="index.html#section3">downloaded</a> OEUnit. Extract all 
+        files in the archive to a folder somewhere (e.g. C:\Workspace\OEUnit ).</p>
+    <br />
+    <a id="section2" /><span class="sectionHeading">2. Add an entry to PROPATH</span>
+    &nbsp;&nbsp;<a class="topLink" href="#top">Top</a>
+    <p>
+        Add an entry to PROPATH pointing to the <b>\src</b> folder where you extracted the archive.</p>
+    <p>
+        If you're using OpenEdge Architect, you can add an entry to the PROPATH from the
+        project properties page (shown below). <br />
+        <b>Note: </b> You must add this propath entry for each OpenEdge project that you wish to use OEUnit with.<br />
+        <br />
+        <img src="images/oea_propath.png" alt="Project properties: PROPATH" /></p>
+    <br />
+    <a id="section3" /><span class="sectionHeading">3. Add the -errorstack startup parameter</span>
+    &nbsp;&nbsp;<a class="topLink" href="#top">Top</a>
+    <p>
+        It is recomended that you use the <b>-errorstack</b> session startup parameter when
+        running OEUnit tests. Using this parameter allows you to see the call stack when
+        an error is thrown during a test run. See the <b><i>OpenEdge Deployment: Startup Command
+            and Parameter Reference</i></b> for more information on the <b>-errorstack</b> session startup parameter.</p>
+    <p>
+        If you're using OpenEdge Architect, you can add session startup parameters from
+        the project properties page (shown below).<br />
+        <b>Note: </b> You must add this parameter for each OpenEdge project that you wish to OEUnit with.<br />
+        <br />
+        <img src="images/oea_errorstack.png" alt="Project Properties: Startup Parameters" /></p>
+    <br />
+    <a id="section4" /><span class="sectionHeading">4. Add a Menu Action to OpenEdge Architect</span>
+    &nbsp;&nbsp;<a class="topLink" href="#top">Top</a>
+    <p>
+        If you're using OpenEdge Architect, it is recommended that you add an action to
+        the ABL Editor's Context Menu (see steps below). Having this action in the context
+        menu allows you to quickly run a test and have the test results displayed in a window
+        that is docked in OpenEdge Architect (see <a href="runningtests.html">Running a Test</a>).</p>
+    <p>
+        1. In OpenEdge Architect, from the <strong>OpenEdge Editor</strong> perspective,
+        click <strong>OpenEdge > Tools > Customization Edtior</strong>.</p>
+    <p>
+        2. From the <strong>Available Extension Points</strong>, click <strong>Edtior Context
+            Menu</strong> and then click <strong>Add</strong>.</p>
+    <p>
+        3. In the <strong>Action Details</strong>, enter the following information:</p>
+    <table cellpadding="10" cellspacing="0" border="1" style="border: 1px solid #C0C0C0">
+        <tr>
+            <td valign="top">
+                Name:
+            </td>
+            <td valign="top">
+                <strong>Run As Test</strong>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                Accelerator:
+            </td>
+            <td valign="top">
+                <strong>&lt;A Key combination - Keyboard shortcut to &#39;Run As Test&#39;&gt;</strong>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                Icon:
+            </td>
+            <td valign="top">
+                <strong>&lt;Path where files extracted&gt;\src\OEUnit\UI\Icons\OEUnit.ico</strong>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                Tooltip:
+            </td>
+            <td valign="top">
+                <strong>Run this class as an OEUnit Test</strong>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                Program:
+            </td>
+            <td valign="top">
+                <strong>OEUnit/UI/RunAsTest.p</strong>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                Parameters:
+            </td>
+            <td valign="top">
+                <strong>&lt;Blank&gt;</strong>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                Configuration:
+            </td>
+            <td valign="top">
+                <strong>&lt;Blank&gt;</strong>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                Send file name of current selection:
+            </td>
+            <td valign="top">
+                <strong>Yes</strong>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                Run Persistent:
+            </td>
+            <td valign="top">
+                <strong>Yes</strong>
+            </td>
+        </tr>
+    </table>
+    <br />
+    <img src="images/oea_extension.png" alt="Customization Editor" />
+    <p>
+        <br />
+        4. Once the above information has been entered, click <strong>Save</strong> and
+        then click <strong>Refresh Customization Options</strong> in the top left corner
+        of the Customization Editor.</p>
+    <img src="images/oea_refresh.png" alt="Refresh Customization Options" />
+    <p>
+        <br />
+        5. If you right-click to open the context menu from the ABL Editor, you should
+        see the new menu item <strong>Extensibility > Run As Test</strong>.</p>
+    <img src="images/oea_contextmenu.png" alt="ABL Editor Context Menu" />
+    <br />
+    <br />
+    <div class="pageFooting">
+        <hr class="headingRule" align="left" />
+        Cameron Wills, 2011.</div>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <title>OEUnit - Writing a Test Case</title>
+</head>
+<body>
+    <a id="top" />
+    <div class="pageHeading">
+        Writing a Test Case<hr class="headingRule" />
+    </div>
+    <br />
+    <table class="menu" cellpadding="10" cellspacing="0">
+        <tr>
+            <td style="width: 360px" valign="top">
+                <b>OEUnit - Unit Testing Framework</b>
+                <ul class="menuItems">
+                    <li><a href="license.html">License</a></li>
+                    <li><a href="changelog.html">Change Log</a></li>
+                    <li><a href="index.html">Overview</a></li>
+                    <li><a href="installation.html">Installation</a></li>
+                    <li>Writing a Test Case
+                        <ul class="menuItems">
+                            <li><a href="#section1">What is a test case?</a></li>
+                            <li><a href="#section2">How to write a simple test case</a></li>
+                            <li><a href="#section3">Test Methods</a></li>
+                            <li><a href="#section4">Before Methods</a></li>
+                            <li><a href="#section5">After Methods</a></li>
+                            <li><a href="#section6">BeforeClass Methods</a></li>
+                            <li><a href="#section7">AfterClass Methods</a></li>
+                            <li><a href="#section8">Ignore Annotation</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="testsuite.html">Writing a Test Suite</a></li>
+                    <li><a href="runningtests.html">Running a Test</a></li>
+                    <li><a href="advanced.html">Advanced</a></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <br />
+    <br />
+    <a id="section1" /><span class="sectionHeading">What is a test case?</span> &nbsp;&nbsp;<a
+        class="topLink" href="#top">Top</a>
+    <p>
+        A test case is a class containing one or more <a href="#section3">Test methods</a>.</p>
+    <p class="important">
+        <b>Important Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>A test case must be an uncompiled class file (.cls).</li>
+        <li>There are no special naming requirements for test cases. Name them whatever you like.</li>
+        <li>Test cases must use the <code class="keyword">ROUTINE-LEVEL ON ERROR UNDO, THROW </code>statement
+            (see <i><b>OpenEdge Development: ABL Reference</b></i>). Not using this statement
+            can cause test failures to be recorded as passes.</li>
+        <li>Nearly all test cases will use the <code>OEUnit.Assertion.Assert</code> class.</li>
+        <li>By default, when a test case is run, all contained Test methods are run.</li>
+        <li>Test, Before(Class) and After(Class) methods are inherited by sub-classes.</li>
+    </ul>
+    <br />
+    <a id="section2" /><span class="sectionHeading">How to write a simple test case</span>
+    &nbsp;&nbsp;<a class="topLink" href="#top">Top</a>
+    <p>
+        1. Create an empty class like the class below <code>SimpleTest.cls</code>:</p>
+    <pre class="code"> <span class="keyword">ROUTINE-LEVEL ON ERROR UNDO, THROW.
+
+ USING</span> OEUnit.Assertion.Assert.
+
+ <span class="keyword">CLASS</span> SimpleTest:
+ <span class="keyword">END CLASS</span>.</pre>
+    <p>
+        <br />
+        2. Add a test method to the class:</p>
+    <pre class="code"> <span class="keyword">ROUTINE-LEVEL ON ERROR UNDO, THROW.
+
+ USING</span> OEUnit.Assertion.Assert.
+
+ <span class="keyword">CLASS</span> SimpleTest:
+   
+   @Test. 
+   <span class="keyword">METHOD PUBLIC VOID</span> IntegerTest(): 
+     <span class="keyword">DEFINE VARIABLE</span> myInt <span class="keyword">AS INTEGER NO-UNDO INIT</span> <span class="literal">0</span>. 
+     Assert:AreEqual(myInt,<span class="literal">0</span>).  <span class="comment">/* Passes */</span> 
+   <span class="keyword">END METHOD</span>.    
+
+ <span class="keyword">END CLASS</span>.</pre>
+    <p>
+        <br />
+        3. To run the test case, see <a href="runningtests.html">Running a Test</a>.</p>
+    <br />
+    <a id="section3" /><span class="sectionHeading">Test Methods</span> &nbsp;&nbsp;<a
+        class="topLink" href="#top">Top</a>
+    <p>
+        Each method annotated with <code>@Test</code> is run as a single atomic test by
+        the test runner, and its result is recorded. Test methods typically make a number
+        of assertions.<br />
+    </p>
+    <p>
+        <b>Syntax:</b></p>
+    <p class="syntax">
+        <b>@Test[(expected="<i>ErrorTypeName</i>")].</b></p>
+    <p class="syntax">
+        <i><b>ErrorTypeName</b></i><br />
+        &nbsp;&nbsp;&nbsp; The Type-Name of a class that inherits from <code>Progress.Lang.Error</code>.
+        Informs the test runner that an error of this type is expected to be thrown by this
+        Test method. If the expected error is thrown, the test passes, otherwise the test
+        fails.<br />
+    </p>
+    <p>
+        <b>
+            <br />
+            Examples:</b>
+    </p>
+    <p>
+        1. A simple test method:</p>
+    <pre class="code">   @Test.
+   <span class="keyword">METHOD PUBLIC VOID</span> Example():
+     Assert:IsTrue(<span class="keyword">TRUE</span>).
+     Assert:IsFalse(<span class="keyword">FALSE</span>).
+   <span class="keyword">END METHOD</span>.</pre>
+    <p>
+        <br />
+        2. A test method expecting an error to be thrown:</p>
+    <pre class="code">   @Test(expected=<span class="literal">"Progress.Lang.AppError"</span>).
+   <span class="keyword">METHOD PUBLIC VOID</span> ExampleExpectingError():
+     <span class="keyword">RETURN ERROR NEW</span> Progress.Lang.AppError().  <span class="comment">/* Passes */</span>
+   <span class="keyword">END METHOD</span>.</pre>
+    <p class="important">
+        <b>
+            <br />
+            Important Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>Test methods can contain any number of assertions.</li>
+        <li>See <code>\src\OEUnit\Assertion\Assert.cls</code> for full list of the assertion
+            methods available.</li>
+        <li>Execution of a Test method will stop when an assertion fails or a <code>Progress.Lang.Error</code>
+            is thrown.</li>
+        <li>Any <code>Progress.Lang.Error</code> thrown while running a Test method will be
+            recorded as a failure, unless the error is expected as defined by the 'expected'
+            attribute of the <code>@Test</code> annotation (see syntax above).</li>
+        <li>If no errors are thrown by while running a Test method, the test is assumed to have
+            succeeded.</li>
+        <li>There are no special naming requirements for Test methods.</li>
+        <li>Test methods must be <code class="keyword">PUBLIC</code> and accept no parameters.</li>
+        <li>Test methods can be <code class="keyword">STATIC</code>.</li>
+    </ul>
+    <br />
+    <a id="section4" /><span class="sectionHeading">Before Methods</span> &nbsp;&nbsp;<a
+        class="topLink" href="#top">Top</a>
+    <p>
+        Methods annotated with <code>@Before</code> are run before each single Test method.
+        Before methods are useful for setting up a test fixture before each test.</p>
+    <p>
+        <b>Syntax:</b></p>
+    <p class="syntax">
+        <b>@Before.</b></p>
+    <p>
+        <b>
+            <br />
+            Example:</b></p>
+    <pre class="code">   @Before.
+   <span class="keyword">METHOD PUBLIC VOID</span> CreateResources():
+     objUsedDuringTest = <span class="keyword">NEW</span> SomeTestObject().
+   <span class="keyword">END METHOD</span>.</pre>
+    <p class="important">
+        <b>
+            <br />
+            Important Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>If a single Before method throws an error, neither the subsequent Before methods
+            nor the Test method will be run.</li>
+        <li>The Before methods in super-classes will be executed before those in the current
+            test case.</li>
+        <li>There are no special naming requirements for Before methods.</li>
+        <li>Before methods must be <code class="keyword">PUBLIC</code> and accept no parameters.</li>
+        <li>Before methods can be <code class="keyword">STATIC</code>.</li>
+    </ul>
+    <br />
+    <a id="section5" /><span class="sectionHeading">After Methods</span> &nbsp;&nbsp;<a
+        class="topLink" href="#top">Top</a>
+    <p>
+        Methods annotated with <code>@After</code> are run after each single test method.
+        After methods are useful for cleaning up a test fixture after a Test method has
+        been run.
+    </p>
+    <p>
+        <b>Syntax:</b></p>
+    <p class="syntax">
+        <b>@After.</b></p>
+    <p>
+        <b>
+            <br />
+            Example:</b></p>
+    <pre class="code">   @After.
+   <span class="keyword">METHOD PUBLIC VOID</span> DeleteResources():
+     <span class="keyword">DELETE OBJECT</span> objUsedDuringTest <span class="keyword">NO-ERROR</span>.
+   <span class="keyword">END METHOD</span>.</pre>
+    <p class="important">
+        <b>
+            <br />
+            Important Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>All After methods are executed regardless of whether an error is thrown in a Before
+            or Test method.</li>
+        <li>The After methods in super-classes will be executed after those in the current test
+            case.</li>
+        <li>There are no special naming requirements for After methods.</li>
+        <li>After methods must be <code class="keyword">PUBLIC</code> and accept no parameters.</li>
+        <li>After methods can be <code class="keyword">STATIC</code>.</li>
+    </ul>
+    <br />
+    <a id="section6" /><span class="sectionHeading">BeforeClass Methods</span> &nbsp;&nbsp;<a
+        class="topLink" href="#top">Top</a>
+    <p>
+        Methods annotated with <code>@BeforeClass</code> are run before any test method
+        of the test case. BeforeClass methods are useful for setting up a test fixture before
+        the first test method is run.
+    </p>
+    <p>
+        <b>Syntax:</b></p>
+    <p class="syntax">
+        <b>@BeforeClass.</b></p>
+    <p>
+        <b>
+            <br />
+            Example:</b></p>
+    <pre class="code">   @BeforeClass.
+   <span class="keyword">METHOD PUBLIC VOID</span> CreateResources():
+     objUsedDuringAllTests = <span class="keyword">NEW</span> SomeTestObject().
+   <span class="keyword">END METHOD</span>.</pre>
+    <p class="important">
+        <b>
+            <br />
+            Important Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>If a single BeforeClass method throws an error, none of the subsequent BeforeClass
+            methods nor any Test methods will be run.</li>
+        <li>The BeforeClass methods in super-classes will be executed before those in the current
+            test case.</li>
+        <li>There are no special naming requirements for BeforeClass methods.</li>
+        <li>BeforeClass methods must be <code class="keyword">PUBLIC</code> and accept no parameters.</li>
+        <li>BeforeClass methods can be <code class="keyword">STATIC</code>.</li>
+    </ul>
+    <br />
+    <a id="section7" /><span class="sectionHeading">AfterClass Methods</span> &nbsp;&nbsp;<a
+        class="topLink" href="#top">Top</a>
+    <p>
+        Methods annotated with <code>@AfterClass</code> are run after all test methods in
+        the test case have been run. AfterClass methods are useful for cleaning up a test
+        fixture after the last Test method has been run.
+    </p>
+    <p>
+        <b>Syntax:</b></p>
+    <p class="syntax">
+        <b>@AfterClass.</b></p>
+    <p>
+        <b>
+            <br />
+            Example:</b></p>
+    <pre class="code">   @AfterClass.
+   <span class="keyword">METHOD PUBLIC VOID</span> DeleteResources():
+     <span class="keyword">DELETE OBJECT</span> objUsedDuringAllTests <span class="keyword">NO-ERROR</span>.
+   <span class="keyword">END METHOD</span>.</pre>
+    <p class="important">
+        <b>
+            <br />
+            Important Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>All AfterClass methods are executed regardless of whether an error is thrown in
+            a BeforeClass method.</li>
+        <li>The AfterClass methods in super-classes will be executed after those in the current
+            test case.</li>
+        <li>There are no special naming requirements for AfterClass methods.</li>
+        <li>After methods must be <code class="keyword">PUBLIC</code> and accept no parameters.</li>
+        <li>After methods can be <code class="keyword">STATIC</code>.</li>
+    </ul>
+    <br />
+    <a id="section8" /><span class="sectionHeading">Ignore Annotation</span> &nbsp;&nbsp;<a
+        class="topLink" href="#top">Top</a>
+    <p>
+        <a href="#section1">Test cases</a> and <a href="#section3">Test methods</a> annotated
+        with <code>@Ignore</code> will not be run by the test runner. The <code>@Ignore</code>
+        annotation is useful for temporarily disabling test cases and test methods.
+    </p>
+    <p>
+        <b>Syntax:</b></p>
+    <p class="syntax">
+        <b>@Ignore.</b></p>
+    <p>
+        <b>
+            <br />
+            Examples:</b></p>
+    <p>
+        1. Ignore a test method:</p>
+    <pre class="code">   @Test. @Ignore.
+   <span class="keyword">METHOD PUBLIC VOID</span> Example():
+     Assert:IsTrue(<span class="keyword">TRUE</span>).
+   <span class="keyword">END METHOD</span>.</pre>
+    <p>
+        <br />
+        2. Ignore an entire test case:</p>
+    <pre class="code"> <span class="keyword">ROUTINE-LEVEL ON ERROR UNDO, THROW.
+
+ USING</span> OEUnit.Assertion.Assert.
+ 
+ @Ignore.
+ <span class="keyword">CLASS</span> MyTestCase:
+   
+   @Test.
+   <span class="keyword">METHOD PUBLIC VOID</span> IsNotRun():
+     Assert:IsTrue(<span class="keyword">TRUE</span>).
+   <span class="keyword">END METHOD</span>.
+        
+ <span class="keyword">END CLASS</span>.</pre>
+    <br />
+    <div class="pageFooting">
+        <hr class="headingRule" align="left" />
+        Cameron Wills, 2011.</div>
+</body>
+</html>
