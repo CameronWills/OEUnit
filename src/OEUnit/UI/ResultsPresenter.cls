@@ -15,7 +15,7 @@ USING OEUnit.Runner.TestClassResult.
 USING OEUnit.Runners.RunTest.
 USING OEUnit.Runners.Manipulation.MethodFilter.
 USING OEUnit.UI.*.
-USING OEUnit.Util.ErrorMessages.
+USING OEUnit.Util.*.
 
 CLASS OEUnit.UI.ResultsPresenter:
   
@@ -33,7 +33,7 @@ CLASS OEUnit.UI.ResultsPresenter:
     test = DYNAMIC-NEW (className) () NO-ERROR.
     IF ERROR-STATUS:ERROR THEN 
       RETURN ERROR NEW AppError("Failed to create instance of '" + className 
-        + "'.~r~n" + ErrorMessages:GetErrorMessage(INPUT ERROR-STATUS:HANDLE),0).
+        + "'.~r~n" + Errors:GetMessage(INPUT ERROR-STATUS:HANDLE),0).
     IF methodName <> "" AND methodName <> ? THEN
       filter = NEW MethodFilter(methodName).
     RunTest:WithDefault(test, ?, filter).
@@ -51,13 +51,10 @@ CLASS OEUnit.UI.ResultsPresenter:
     IF NOT(classFileName MATCHES "*.cls") THEN
       RETURN ERROR NEW AppError("File is not a valid test case/suite. Must be a class file (.cls).",0).
     
-    ErrorMessages:Initalize().
-    COMPILE VALUE(classFileName) SAVE = FALSE NO-ERROR.
-    IF COMPILER:ERROR THEN
-      RETURN ERROR NEW AppError("Failed to compile '" + classFileName
-        + "'.~r~n" + ErrorMessages:GetErrorMessage(INPUT COMPILER:HANDLE),0).
+    DEFINE VARIABLE classTypeName AS CHARACTER NO-UNDO.
+    classTypeName = ClassType:FromFile(classFileName).
     
-    RerunTest(COMPILER:CLASS-TYPE,"").
+    RerunTest(classTypeName, "").
     
   END METHOD.
  

@@ -9,7 +9,7 @@
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 USING OEUnit.Reflection.*.
-USING OEUnit.Util.List.
+USING OEUnit.Util.*.
 
 CLASS OEUnit.Reflection.InfoBuilder:
 
@@ -35,6 +35,9 @@ CLASS OEUnit.Reflection.InfoBuilder:
       xrefFile = GUID(GENERATE-UUID) + ".xml"
       inf = NEW ClassInfo(typeClass:TypeName, obj).
     
+    /* Suppress warning codes before compile */
+    Warnings:Suppress().
+    
     /* Compile the class and all superclasses */
     DO WHILE SEARCH(classFile) <> ?:
       COMPILE VALUE(classFile) XREF-XML VALUE(xrefFile).
@@ -44,8 +47,10 @@ CLASS OEUnit.Reflection.InfoBuilder:
     END.
     RETURN inf.
     FINALLY:
+      Warnings:Restore().
       /* No need to delete typeClass, as instances of Progress.Lang.Class are
          singletons that cannot be deleted */
+       
       OS-DELETE VALUE(xrefFile).
     END FINALLY.
     
@@ -80,7 +85,7 @@ CLASS OEUnit.Reflection.InfoBuilder:
     
     DO i = 1 TO xmlDocElement:NUM-CHILDREN:
       xmlDocElement:GET-CHILD(xmlSourceElement,i).
-      IF xmlSourceElement:SUBTYPE = "ELEMENT" AND xmlSourceElement:NAME = "SOURCE" THEN 
+      IF xmlSourceElement:SUBTYPE = "ELEMENT" AND xmlSourceElement:NAME = "Source" THEN 
         ParseSourceElement(xmlSourceElement, inf).
     END.
     FINALLY:

@@ -1,40 +1,47 @@
-body
-{
-	font-family: Tahoma, Verdana, Helvetica, Arial, sans-serif;
-	font-size: 10pt;
-	color:Black;
+body {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 14pt;
+	color:#333;
 	line-height:1.5em;
 }
 
-.pageHeading, .sectionHeading
-{
-	font-family: Verdana, Helvetica, Arial, sans-serif;
-	font-weight:bold;
-	border-bottom: 1 solid #A0B4E0;
-	margin-bottom:5px;
-	text-indent:8pt;
+h1, h2, h3 {
+	font-weight: bold;
+	margin: 1.5em 0 0.5em 0;
+	color:#333;
 }
-.pageHeading {font-size: 16pt}
-.sectionHeading{font-size: 13pt; text-decoration: underline;}
-.pageFooting{font-size: 8pt; text-align:right}
-
-
-.headingRule
-{
-	border-style:none;
-	border-top: 1px solid #999999;
-	height:0px;
-	color:#999999;
-	width:100%;
+ 
+h1 {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #DDD;    	
 }
 
-.menu
-{
+.footer {
+	margin-top: 40px;
+	padding-top: 20px;
+    border-top: 1px solid #DDD;  
+    font-size: 12px;
+    text-align: right;
+}
+
+
+
+.menu {
 	background-color: #F7F7F7; 
 	border-right: silver 1px solid; 
 	border-top: silver 1px solid; 
 	border-left: silver 1px solid; 
 	border-bottom: silver 1px solid;
+	margin: 20px 0 50px 0;
+	width: 500px;
+}
+
+.menu a {
+    text-decoration: none;
+}
+
+.menu a:hover {
+    text-decoration: underline;
 }
 
 .menuItems
@@ -42,17 +49,11 @@ body
 	line-height:1.4;
 }
 
-.topLink
-{
-	font-weight:normal;
-	font-family: Tahoma, Verdana, Helvetica, Arial, sans-serif;
-	font-size: 8pt;
-}
-
 .code
 {
+	color:black;
 	margin-left:25px;
-	border-left: solid 8pt #CCCCCC;
+	border-left: solid 8pt #E8EFFA;
 }
 
 .syntax

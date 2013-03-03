@@ -5,38 +5,25 @@
     <title>OEUnit - Writing a Test Suite</title>
 </head>
 <body>
-    <a id="top" />
-    <div class="pageHeading">
-        Writing a Test Suite<hr class="headingRule" />
-    </div>
-    <br />
     <table class="menu" cellpadding="10" cellspacing="0">
         <tr>
-            <td style="width: 360px" valign="top">
-                <b>OEUnit - Unit Testing Framework</b>
+            <td>
+                <h2>OEUnit - Unit Testing Framework</h2>
                 <ul class="menuItems">
-                    <li><a href="license.html">License</a></li>
-                    <li><a href="changelog.html">Change Log</a></li>
                     <li><a href="index.html">Overview</a></li>
                     <li><a href="installation.html">Installation</a></li>
                     <li><a href="testcase.html">Writing a Test Case</a></li>
-                    <li>Writing a Test Suite
-                        <ul class="menuItems">
-                            <li><a href="#section1">What is a test suite?</a></li>
-                            <li><a href="#section2">How to write a simple test suite</a></li>
-                            <li><a href="#section3">Ignore Annotation</a></li>
-                        </ul>
-                    </li>
+                    <li>Writing a Test Suite</li>
                     <li><a href="runningtests.html">Running a Test</a></li>
-                    <li><a href="advanced.html">Advanced</a></li>
+                    <li><a href="license.html">License</a></li>
+                    <li><a href="changelog.html">Change Log</a></li>
                 </ul>
             </td>
         </tr>
     </table>
-    <br />
-    <br />
-    <a id="section1" /><span class="sectionHeading">What is a test suite?</span> &nbsp;&nbsp;<a
-        class="topLink" href="#top">Top</a>
+    <h1>Writing a Test Suite</h1>
+    <a name="suites"></a>
+    <h2>What is a test suite?</h2>
     <p>
         A test suite is a class that contains a list of <a href="testcase.html">test cases</a>
         and/or other test suites. Test suites are useful for grouping and organising test
@@ -46,16 +33,13 @@
     <ul style="margin-top: auto;">
         <li>A test suite must be an uncompiled class file (.cls).</li>
         <li>Test suites must inherit from <code>OEUnit.Runner.TestSuite</code>.</li>
-        <li>Test suites must use the <code class="keyword">ROUTINE-LEVEL ON ERROR UNDO, THROW </code>statement
-            (see <i><b>OpenEdge Development: ABL Reference</b></i>). Not using this statement
-            can cause test failures to be recorded as passes.</li>
+        <li>Test suites must use the <code class="keyword">ROUTINE-LEVEL ON ERROR UNDO, THROW </code>statement.
+            Not using this statement can cause test failures to be recorded as passes.</li>
         <li>Test suites can contain a combination of test cases and other test suites.</li>
         <li>By default, when a test suite is run, all contained test cases and test suites are
             run.</li>
     </ul>
-    <br>
-    <a id="section2" /><span class="sectionHeading">How to write a simple test suite</span>
-    &nbsp;&nbsp;<a class="topLink" href="#top">Top</a>
+    <h2>How to write a simple test suite</h2>
     <p>
         1. Create a class that inherits from <code>OEUnit.Runner.TestSuite</code> like the class below <code>SimpleSuite.cls</code>:</p>
     <pre class="code"> <span class="keyword">ROUTINE-LEVEL ON ERROR UNDO, THROW.
@@ -92,18 +76,15 @@
     <p>
         <br />
         4. To run the test suite, see <a href="runningtests.html">Running a Test</a>.</p>
-    <br />
-    <a id="section3" /><span class="sectionHeading">Ignore Annotation</span> &nbsp;&nbsp;<a
-        class="topLink" href="#top">Top</a>
+    <h2>Ignore Annotation</h2>
     <p>
-        <a href="#section1">Test suites</a> annotated
-        with <code>@Ignore</code> will not be run by the test runner. The <code>@Ignore</code>
+        Test suites annotated with <code>@Ignore</code> will not be run by the test runner. The <code>@Ignore</code>
         annotation is useful for temporarily disabling test suites.
     </p>
     <p>
         <b>Syntax:</b></p>
     <p class="syntax">
-        <b>@Ignore.</b></p>
+        <pre>   @Ignore.</pre></p>
     <p>
         <b>
             <br />
@@ -124,8 +105,8 @@
        
  END CLASS</span>.</pre>
     <br />
-    <div class="pageFooting">
-        <hr class="headingRule" />
-        Cameron Wills, 2011.</div>
+    <div class="footer">
+        Cameron Wills, 2011.
+    </div>
 </body>
 </html>

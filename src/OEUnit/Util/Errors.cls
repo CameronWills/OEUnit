@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------
-  File        : ErrorMessages.cls
+  File        : Errors.cls
   Package     : OEUnit.Util
   Description : Helper methods for extracting error messages from the 
                 ERROR-STATUS/COMPILER system handles and instances of 
@@ -7,7 +7,7 @@
   Author      : Cameron Wills
 ------------------------------------------------------------------------------*/
 
-CLASS OEUnit.Util.ErrorMessages:
+CLASS OEUnit.Util.Errors:
 
   METHOD PUBLIC STATIC VOID Initalize():
   END METHOD.
@@ -15,7 +15,7 @@ CLASS OEUnit.Util.ErrorMessages:
   /*----------------------------------------------------------------------------
     Returns a concatenated string of all error messages in the given handle.
   ----------------------------------------------------------------------------*/
-  METHOD PUBLIC STATIC CHARACTER GetErrorMessage(INPUT hError AS HANDLE):
+  METHOD PUBLIC STATIC CHARACTER GetMessage(INPUT hError AS HANDLE):
   
     DEFINE VARIABLE i AS INTEGER NO-UNDO.
     DEFINE VARIABLE errorMessage AS CHARACTER NO-UNDO.
@@ -34,7 +34,7 @@ CLASS OEUnit.Util.ErrorMessages:
     Returns a concatenated string of all error messages contained in the given
     Progress.Lang.Error object.
   ----------------------------------------------------------------------------*/
-  METHOD PUBLIC STATIC CHARACTER GetErrorMessage(INPUT err AS Progress.Lang.Error):
+  METHOD PUBLIC STATIC CHARACTER GetMessage(INPUT err AS Progress.Lang.Error):
     DEFINE VARIABLE i AS INTEGER NO-UNDO.
     DEFINE VARIABLE errorMessage AS CHARACTER NO-UNDO.
     

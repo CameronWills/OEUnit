@@ -71,7 +71,7 @@ CLASS OEUnit.Runner.TestResult ABSTRACT:
     IF Errors:SIZE > 1 THEN 
       failMessage = " -- Multiple failures/errors occured --".
     ELSE
-      failMessage = ErrorMessages:GetErrorMessage(err).
+      failMessage = OEUnit.Util.Errors:GetMessage(err).
       
   END METHOD.
 

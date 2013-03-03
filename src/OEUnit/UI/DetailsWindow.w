@@ -206,16 +206,16 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
          MAX-WIDTH          = 336
          VIRTUAL-HEIGHT     = 100
          VIRTUAL-WIDTH      = 336
-         MAX-BUTTON         = no
-         RESIZE             = yes
-         SCROLL-BARS        = no
-         STATUS-AREA        = no
+         MAX-BUTTON         = NO
+         RESIZE             = YES
+         SCROLL-BARS        = NO
+         STATUS-AREA        = NO
          BGCOLOR            = ?
          FGCOLOR            = ?
-         KEEP-FRAME-Z-ORDER = yes
-         THREE-D            = yes
-         MESSAGE-AREA       = no
-         SENSITIVE          = yes.
+         KEEP-FRAME-Z-ORDER = YES
+         THREE-D            = YES
+         MESSAGE-AREA       = NO
+         SENSITIVE          = YES.
 ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 /* END WINDOW DEFINITION                                                */
 &ANALYZE-RESUME
@@ -253,7 +253,7 @@ ASSIGN
 /* SETTINGS FOR FILL-IN resultStatus IN FRAME DEFAULT-FRAME
    NO-ENABLE                                                            */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(detailsWindow)
-THEN detailsWindow:HIDDEN = yes.
+THEN detailsWindow:HIDDEN = YES.
 
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
@@ -489,8 +489,8 @@ PROCEDURE setError PRIVATE :
     resultMessage:SCREEN-VALUE IN FRAME DEFAULT-FRAME = resultMessage
     callstack:SCREEN-VALUE IN FRAME DEFAULT-FRAME = callstack
     currentError:SCREEN-VALUE IN FRAME DEFAULT-FRAME = STRING(currentError)
-    btnNext:SENSITIVE in FRAME DEFAULT-FRAME = NOT(currentError >= errorCount)
-    btnPrevious:SENSITIVE in FRAME DEFAULT-FRAME = NOT(currentError <= 1).
+    btnNext:SENSITIVE IN FRAME DEFAULT-FRAME = NOT(currentError >= errorCount)
+    btnPrevious:SENSITIVE IN FRAME DEFAULT-FRAME = NOT(currentError <= 1).
     
 END PROCEDURE.
 

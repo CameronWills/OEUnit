@@ -5,37 +5,34 @@
     <title>OEUnit - Change Log</title>
 </head>
 <body>
-    <a id="top" />
-    <div class="pageHeading">
-        Change Log<hr class="headingRule" />
-    </div>
-    <br />
     <table class="menu" cellpadding="10" cellspacing="0">
         <tr>
-            <td style="width: 360px" valign="top">
-                <b>OEUnit - Unit Testing Framework</b>
+            <td >
+                <h2>OEUnit - Unit Testing Framework</h2>
                 <ul class="menuItems">
-                    <li><a href="license.html">License</a></li>
-                    <li>Change Log
-                        <ul class="menuItems">
-                            <li><a href="#section1">Change Log</a></li>
-                        </ul>
-                    </li>
                     <li><a href="index.html">Overview</a></li>
                     <li><a href="installation.html">Installation</a></li>
                     <li><a href="testcase.html">Writing a Test Case</a></li>
                     <li><a href="testsuite.html">Writing a Test Suite</a></li>
                     <li><a href="runningtests.html">Running a Test</a></li>
-                    <li><a href="advanced.html">Advanced</a></li>
+                    <li><a href="license.html">License</a></li>
+                    <li>Change Log</li>
                 </ul>
             </td>
         </tr>
     </table>
-    <br />
-    <br />
-    <a id="section1" /><span class="sectionHeading">Change Log</span> &nbsp;&nbsp;<a
-        class="topLink" href="#top">Top</a>
-    <p><b>1.2</b></p>
+    <h1>
+        Change Log
+    </h1>
+    <h2>1.3</h2>
+    <ul>
+       <li>Tested with OpenEdge 11.2 on Windows 7 Ultimate 64 bit</li>
+       <li>Fixed bug where the results window would display for a moment and then disappear.</li>
+       <li>Fixed bug where error 468 is thrown when r-code already exists for a test class (Compile aborted. SAVE not specified and r-code file exists)</li>
+       <li>Fixed bug the DYNAMIC-NEW failed to create an instance based on the class file-name alone. When r-code was also present in the directory.</li>
+       <li>Improved documentation in line with the new Progress Developer Studio (previously named OpenEdge Architect)</li>
+    </ul>
+    <h2>1.2</h2>
     <ul>
        <li>OEUnit 1.2 requires OpenEdge 10.2b </li>
        <li>Changes to show the error message returned from simple RETURN ERROR "error message" statements</li>
@@ -47,19 +44,19 @@
 	     <li>Simplified interfaces for Util/List.cls and Util/IComparator.cls</li>
 	     <li>Added a change log to the project documentation</li>
     </ul>
-    <p><b>1.1 Beta</b></p>
+    <h2>1.1</h2>
     <ul>
 	     <li>Added changes to support the OpenEdge 10.2a runtime</li>
 	     <li>Corrected the method modifiers in UI/ResultsWindowView.cls - causing compile time errors in 10.2a, but was somehow working in 10.1c ?</li>
 	     <li>Fixed bug in Remove() method of Util/List.cls - elements were being re-indexed incorrectly</li>
     </ul>
-    <p><b>1.0 Beta</b></p>
+    <h2>1.0 Beta</h2>
     <ul>
 	     <li>Initial release - basic functionality to run test cases and suites.</li>
     </ul>
     <br />
-    <div class="pageFooting">
-        <hr class="headingRule" align="left" />
-        Cameron Wills, 2011.</div>
+    <div class="footer">
+        Cameron Wills, 2011.
+    </div>
 </body>
 </html>

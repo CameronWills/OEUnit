@@ -5,77 +5,64 @@
     <title>OEUnit - Running a Test</title>
 </head>
 <body>
-    <a id="top"/>
-    <div class="pageHeading">Running a Test<hr class="headingRule"/></div><br />
-        <table class="menu" cellpadding="10" cellspacing="0">
-            <tr>
-                <td style="width: 360px" valign="top">
-                    <b>OEUnit - Unit Testing Framework</b>
-                    <ul class="menuItems">
-                        <li><a href="license.html">License</a></li>
-                        <li><a href="changelog.html">Change Log</a></li>
-                        <li><a href="index.html">Overview</a></li>
-                        <li><a href="installation.html">Installation</a></li>
-                        <li><a href="testcase.html">Writing a Test Case</a></li>
-                        <li><a href="testsuite.html">Writing a Test Suite</a></li>
-                        <li>Running a Test
-                            <ul class="menuItems">
-                                <li><a href="#section1">Running a test from the Editor Context Menu</a></li>
-                                <li><a href="#section2">Running a test from code</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="advanced.html">Advanced</a></li>
-                    </ul>
-                </td>
-            </tr>
-        </table>
-    <br />
-    <br />
-    <br />
-    <a id="section1"/><span class="sectionHeading">Running a test from the Editor Context Menu</span> &nbsp;&nbsp;<a class="topLink" href="#top">Top</a>
-    <p>If you&#39;re using OpenEdge Architect, and have followed the instructions in <a href="installation.html#section4">Installation Step 
-        4: Add a Menu Action to OpenEdge Architect</a>
+    <table class="menu" cellpadding="10" cellspacing="0">
+        <tr>
+            <td >
+                <h2>OEUnit - Unit Testing Framework</h2>
+                <ul class="menuItems">
+                    <li><a href="index.html">Overview</a></li>
+                    <li><a href="installation.html">Installation</a></li>
+                    <li><a href="testcase.html">Writing a Test Case</a></li>
+                    <li><a href="testsuite.html">Writing a Test Suite</a></li>
+                    <li>Running a Test</li>
+                    <li><a href="license.html">License</a></li>
+                    <li><a href="changelog.html">Change Log</a></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <h1>Running a Test</h1>
+    
+    <h2>Running a test from the Editor Context Menu</h2>
+    <p>If you&#39;re using Progress Developer Studio (previously OpenEdge Architect), and have followed the instructions in <a href="installation.html#action">Installation Step 
+        4: Add a Context Menu item</a>
        , this is the recommended method to run a test.</p>
-    <p>1. In OpenEdge Architect, open the test case or test suite you wish to run.</p>
+    <p>1. In Progress Developer Studio, open the test case or test suite you wish to run.</p>
     <p>2. From the ABL Editor, right click to open the context menu and then click <b>
         Extensibility &gt; Run As Test</b>.</p>
     
     <img src="images/oea_runastest.png" alt="ABL Editor Context Menu" />
     <p>
         <br />
-        3. The test will run in the background. Once its finished, the results should appear in a new view in OpenEdge Architect 
-        (shown below).</p>
+        3. The test will run in the background. Once its finished, the results should appear in a new view (similar to below).</p>
     <img src="images/oea_results.png" alt="Test Results Window" /> 
-        
-    <br />
-    <br />
-    <br />
-    <br />    
-    <a id="section2"/><span class="sectionHeading">Running a test from code</span> &nbsp;&nbsp;<a class="topLink" href="#top">Top</a>
+            
+    <h2>Running a test from code</h2>
+    <p>There are two options for running a test from code:</p>
     <p>Option 1. Using the <code>OEUnit.Runners.RunTest</code> helper (runs the test and displays the results):</p>
     <pre class="code"> <span class="keyword">ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
  USING</span> OEUnit.Runners.RunTest.
 
- <span class="comment">/* Create an instance of the test case */</span>
+ <span class="comment">/* Create an instance of your test case class */</span>
  <span class="keyword">DEFINE VARIABLE</span> test <span class="keyword">AS</span> SimpleTest <span class="keyword">NO-UNDO</span>.
  test = <span class="keyword">NEW</span> SimpleTest().
  
- <span class="comment">/* Run the test and display the results */</span>
+ <span class="comment">/* Run your test with the default 'runner' - runs all tests and displays the results */</span>
  RunTest:WithDefault(test).
 
- <span class="comment">/* Delete the test case */</span>
+ <span class="comment">/* Delete the test case instance */</span>
  <span class="keyword">FINALLY:
    DELETE OBJECT</span> test <span class="keyword">NO-ERROR.
  END FINALLY</span>.</pre>
     <p>
         <br />
-            Option 2. Using a runner directly:</p>
+            Option 2. Using a runner directly (better choice if you wish to inspect the results in code) :</p>
     <pre class="code"> <span class="keyword">ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
  USING</span> OEUnit.Runners.OEUnitRunner.
 
- <span class="comment">/* Create an instance of the test suite */</span>
+ <span class="comment">/* Create an instance of your test case or suite */</span>
  <span class="keyword">DEFINE VARIABLE</span> suite <span class="keyword">AS</span> SimpleSuite <span class="keyword">NO-UNDO</span>.
  suite = <span class="keyword">NEW</span> SimpleSuite().
  
@@ -83,20 +70,18 @@
  <span class="keyword">DEFINE VARIABLE</span> runner <span class="keyword">AS</span> OEUnitRunner <span class="keyword">NO-UNDO</span>.
  runner = <span class="keyword">NEW</span> OEUnitRunner().
 
- <span class="comment">/* Run the test suite */</span>
+ <span class="comment">/* Run your test case or suite */</span>
  runner:RunTest(suite).
 
  <span class="comment">/* Display the results */</span>
  <span class="keyword">MESSAGE</span> runner:Results:ToString() <span class="keyword">VIEW-AS ALERT-BOX</span>.
 
- <span class="comment">/* Delete the test suite and runner */</span>
+ <span class="comment">/* Delete the test and runner */</span>
  <span class="keyword">FINALLY:
    DELETE OBJECT</span> suite <span class="keyword">NO-ERROR.
    DELETE OBJECT</span> runner <span class="keyword">NO-ERROR.
  END FINALLY</span>.</pre>
-    <br />
-    <br />
-    
-    <div class="pageFooting"><hr class="headingRule"/>Cameron Wills, 2011.</div>
+
+    <div class="footer">Cameron Wills, 2011.</div>
 </body>
 </html>

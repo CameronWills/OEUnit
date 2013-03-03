@@ -34,6 +34,7 @@ DEFINE VARIABLE viewId AS CHARACTER INIT
 DEFINE VARIABLE viewTitle AS CHARACTER NO-UNDO.
 DEFINE VARIABLE viewHwnd AS INTEGER NO-UNDO.
 DEFINE VARIABLE runningInArchitect AS LOGICAL NO-UNDO INIT TRUE.
+DEFINE VARIABLE waiting AS LOGICAL NO-UNDO INIT FALSE.
 DEFINE VARIABLE totalDisplayed AS INTEGER NO-UNDO.
 DEFINE VARIABLE detailsWindowHeight AS DECIMAL NO-UNDO INIT 24.
 DEFINE VARIABLE detailsWindowWidth AS DECIMAL NO-UNDO INIT 140.
@@ -216,13 +217,13 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
          MAX-WIDTH          = 336
          VIRTUAL-HEIGHT     = 54.91
          VIRTUAL-WIDTH      = 336
-         RESIZE             = yes
-         SCROLL-BARS        = no
-         STATUS-AREA        = no
+         RESIZE             = YES
+         SCROLL-BARS        = NO
+         STATUS-AREA        = NO
          BGCOLOR            = ?
          FGCOLOR            = ?
-         MESSAGE-AREA       = no
-         SENSITIVE          = yes.
+         MESSAGE-AREA       = NO
+         SENSITIVE          = YES.
 ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 /* END WINDOW DEFINITION                                                */
 &ANALYZE-RESUME
@@ -255,7 +256,7 @@ ASSIGN
 /* SETTINGS FOR FILL-IN passes IN FRAME DEFAULT-FRAME
    NO-ENABLE                                                            */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(resultsWindow)
-THEN resultsWindow:HIDDEN = yes.
+THEN resultsWindow:HIDDEN = YES.
 
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
@@ -473,10 +474,10 @@ DO ON ERROR   UNDO MAIN-BLOCK, LEAVE MAIN-BLOCK
       resultsWindow:IDE-PARENT-HWND = viewHwnd
       resultsWindow:IDE-WINDOW-TYPE = 0.
     setEmbeddedWindow(viewId, viewTitle, {&WINDOW-NAME}:HANDLE).
-    
   END.
   ELSE
-   resultsWindow:LOAD-SMALL-ICON ("OEUnit/UI/Icons/OEUnit.ico"). 
+    resultsWindow:LOAD-SMALL-ICON ("OEUnit/UI/Icons/OEUnit.ico").
+ 
 END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -639,11 +640,19 @@ PROCEDURE setTestResults :
   /* If browser not already displayed, set the 'Name' column width */
   IF NOT(brwResults:SENSITIVE) THEN brwResults:GET-BROWSE-COLUMN(1):WIDTH = 60.
   RUN enable_UI.
-  IF NOT runningInArchitect  THEN 
-    ASSIGN 
-      SUB-MENU mniRerun:SENSITIVE IN MENU mnuTestResult = FALSE 
-      MENU-ITEM mniOpenInEditor:SENSITIVE IN MENU mnuTestResult = FALSE.
   APPLY "ENTRY" TO brwResults.
+  
+  /* If not running inside OpenEdge architect then wait for close */
+  IF NOT runningInArchitect THEN DO:
+    ASSIGN 
+/*      SUB-MENU mniRerun:SENSITIVE IN MENU mnuTestResult = FALSE*/
+      MENU-ITEM mniOpenInEditor:SENSITIVE IN MENU mnuTestResult = FALSE.
+    IF NOT waiting THEN DO:
+      waiting = TRUE.
+      WAIT-FOR CLOSE OF THIS-PROCEDURE.
+    END.
+  END.
+  
 END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */

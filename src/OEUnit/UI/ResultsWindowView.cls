@@ -96,7 +96,7 @@ CLASS OEUnit.UI.ResultsWindowView IMPLEMENTS IResultsView:
       ttTestResult.TestId = 1
       ttTestResult.ResultStatus = TestResult:StatusError
       ttTestResult.ResultStatusString = CAPS(TestResult:GetStatusAsString(TestResult:StatusError))
-      ttTestResult.ResultMessage = ErrorMessages:GetErrorMessage(err)
+      ttTestResult.ResultMessage = Errors:GetMessage(err)
       ttTestResult.ErrorCount = 1
       ttTestResult.IsClass = TRUE
       ttTestResult.HasErrors = TRUE.
@@ -186,7 +186,7 @@ CLASS OEUnit.UI.ResultsWindowView IMPLEMENTS IResultsView:
     CREATE ttError.
     ASSIGN ttError.TestId = ttTestResult.TestId
            ttError.ErrorId = errorId 
-           ttError.ErrorMessage = ErrorMessages:GetErrorMessage(err)
+           ttError.ErrorMessage = Errors:GetMessage(err)
            ttError.CallStack = err:GetClass():TypeName + " at" + CHR(13) 
              + err:CallStack.
     
