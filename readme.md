@@ -1,6 +1,6 @@
 #OEUnit
 
-OEUnit is a unit testing framework for OpenEdge ABL . OEUnit is intended to help write and run repeatable unit tests - similar to JUnit and other xUnit-based unit testing frameworks.
+OEUnit is a unit testing framework for OpenEdge ABL. OEUnit is intended to help write and run repeatable unit tests - similar to JUnit and other xUnit-based unit testing frameworks.
 
 For full documentation, see **doc/index.html** in the repository.
 
@@ -10,6 +10,10 @@ Below is a screenshot of the test results docked in Progress Developer Studio (p
 ![Image](/doc/images/oea_example1.png?raw=true)
 
 ##Change Log
+###1.4
+
+- Integrated Jamie Townsend's version of OEUnit that supports PCT with current release of OEUnit.
+
 ###1.3
 
 - Fixed bug where the results window would display for a moment and then disappear.
