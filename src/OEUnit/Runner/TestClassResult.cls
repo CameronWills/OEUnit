@@ -103,6 +103,19 @@ CLASS OEUnit.Runner.TestClassResult INHERITS TestResult:
   END METHOD.
   
   /*----------------------------------------------------------------------------
+    Returns the total number of test methods known to this object.
+  ----------------------------------------------------------------------------*/
+  METHOD PUBLIC OVERRIDE INTEGER CountTests():
+    DEFINE VARIABLE testCount AS INTEGER NO-UNDO INIT 0.
+    
+    results:Reset().
+    DO WHILE results:MoveNext():
+      testCount = testCount + CAST(results:Current, TestResult):CountTests().
+    END.
+    RETURN testCount. 
+  END METHOD.
+  
+  /*----------------------------------------------------------------------------
     Returns the total number of test methods that have the given status.
   ----------------------------------------------------------------------------*/
   METHOD PUBLIC OVERRIDE INTEGER CountTestsWithStatus(INPUT testStatus AS INTEGER):

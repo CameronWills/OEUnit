@@ -109,6 +109,15 @@ CLASS OEUnit.Runner.TestResult ABSTRACT:
     subclasses.
   ----------------------------------------------------------------------------*/
   METHOD PUBLIC ABSTRACT INT64 GetDuration().
+
+  /*----------------------------------------------------------------------------
+    Counts the number of tests in this result. Will always be 1, unless this is
+    a child class which holds more than one result (which will required an
+    overridden procedure.)
+  ----------------------------------------------------------------------------*/ 
+  METHOD PUBLIC INTEGER CountTests():
+      RETURN 1.
+  END METHOD.
   
   /*----------------------------------------------------------------------------
     Returns 1 if the given testStatus matches the current status. Otherwise 
