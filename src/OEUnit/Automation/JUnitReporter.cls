@@ -4,25 +4,16 @@
   Description :   JUnit XML Format Reporter Class.
 ------------------------------------------------------------------------------*/
 
-USING OEUnit.Automation.BaseReporter.
+USING OEUnit.Automation.FileReporter.
 USING OEUnit.Runner.*.
 
-CLASS OEUnit.Automation.JUnitReporter INHERITS BaseReporter:
-  
-  /*----------------------------------------------------------------------------
-    File name and path for output XML file.
-  ----------------------------------------------------------------------------*/  
-  DEFINE PUBLIC PROPERTY FileName AS CHARACTER NO-UNDO 
-	GET.
-	PROTECTED SET.
+CLASS OEUnit.Automation.JUnitReporter INHERITS FileReporter:
 	
   /*----------------------------------------------------------------------------
     Class constructor. fName is path and file name for output XML file.
   ----------------------------------------------------------------------------*/  
   CONSTRUCTOR PUBLIC JUnitReporter(INPUT fName AS CHARACTER):
-	
-	FileName = fName.
-	
+	SUPER(fName).
   END CONSTRUCTOR.
 
   /*----------------------------------------------------------------------------
