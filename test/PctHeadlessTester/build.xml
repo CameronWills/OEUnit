@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="MyProject" default="ExecTests" basedir=".">
+  <property environment="env"/>
+  <taskdef resource="PCT.properties" classpath="${env.PCT_HOME}/lib/PCT.jar"/>
+  <DBConnection id="dbconn" dbName="PUT_YOUR_DB_HERE" />  
+  <target name="ExecTests" description="Executes OEUnit Tests. Create OETests dir and put your tests there. Next run PCT.">
+    <mkdir dir="OEResults"/>
+    <PCTRun procedure="OEUnit\Logger\CommandLineResultsLogger.p" dlcHome="${env.DLC}" graphicMode="true" parameter="OEResults,OETests">
+      <DBConnection refid="dbconn" />
+      <propath>
+        <pathelement path="OETests" />
+      </propath>
+      <PCTRunOption name="-errorstack" />
+    </PCTRun>
+  </target>
+</project>
