@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  File        :   ResultsSurefireLogger.cls
-  Package     :   OEUnit.Logger
+  File        :   SurefireReporter.cls
+  Package     :   OEUnit.Automation
   Description :   Used for writing test results to a file in a Surefire-like
                   format. One log file will be created for each test class.
  Known Issues :

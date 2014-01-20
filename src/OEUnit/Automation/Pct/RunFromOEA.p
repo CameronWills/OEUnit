@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------------
-  File        :   OEAResultsLogger.p
-  Package     :   OEUnit.Logger
-  Description :   Wrapper of ResultsLogger.p to enable it to be easily invoked
-                  from OpenEdge Architect.  The OutputDirectory must be passed
+  File        :   RunFromOEA.p
+  Package     :   OEUnit.Automation.Pct
+  Description :   Wrapper of RunTests.p to enable it to be easily invoked
+                  from OpenEdge Architect. The OutputDirectory must be passed
                   in as the only entry in the "Paramters" field in the
                   Customization Editor.
                   

@@ -1,6 +1,6 @@
  /*------------------------------------------------------------------------------
   File        :   JUnitReporter.cls
-  Package     :   OEUnit.Reporters
+  Package     :   OEUnit.Automation
   Description :   JUnit XML Format Reporter Class.
 ------------------------------------------------------------------------------*/
 

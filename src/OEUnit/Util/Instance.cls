@@ -14,7 +14,7 @@ USING Progress.Lang.Object.
 CLASS OEUnit.Util.Instance:
 
   /*----------------------------------------------------------------------------
-    Construct a ClassInfo instance representing the given object.
+    Create a new instance of a class from the given class file name 
   ----------------------------------------------------------------------------*/
   METHOD PUBLIC STATIC Object FromFile(INPUT classFile AS CHARACTER):
     
@@ -54,7 +54,7 @@ CLASS OEUnit.Util.Instance:
   END METHOD.
   
   /*----------------------------------------------------------------------------
-    Parses the xref-xml file looking for the class type name. 
+    Create a new instance of a class from the given class type name 
   ----------------------------------------------------------------------------*/   
   METHOD PUBLIC STATIC Object FromType(INPUT classType AS CHARACTER):
     DEFINE VARIABLE instance AS Object NO-UNDO.

@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
-  File        :   OEUnitReporter.cls
-  Package     :   OEUnit.Reporters
+  File        :   BaseReporter.cls
+  Package     :   OEUnit.Automation
   Description :   Base Reporter Class. Custom reporters should inherit from this
                   class.
 ------------------------------------------------------------------------------*/
