@@ -80,3 +80,21 @@ h1 {
 {
   color:rgb(0,195,0);
 }
+
+.paramlist {
+  border: 0px;
+}
+
+.paramlist tbody tr:nth-child(even) {
+  background-color: #E9EEF0;
+}
+
+.paramlist th {
+  text-align: left;
+  padding: 3px 7px;
+}
+
+.paramlist td {
+  text-align: left;
+  padding: 3px 7px;
+}
