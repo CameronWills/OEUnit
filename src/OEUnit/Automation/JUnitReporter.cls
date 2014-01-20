@@ -3,6 +3,7 @@
   Package     :   OEUnit.Automation
   Description :   JUnit XML Format Reporter Class.
 ------------------------------------------------------------------------------*/
+ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 USING OEUnit.Automation.FileReporter.
 USING OEUnit.Runner.*.
