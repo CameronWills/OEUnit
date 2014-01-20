@@ -2,7 +2,6 @@
   File        : Warnings.cls
   Package     : OEUnit.Util
   Description : Helper methods for suppressing warning messages during COMPILE. 
-  Author      : Cameron Wills
 ------------------------------------------------------------------------------*/
 
 CLASS OEUnit.Util.Warnings:

@@ -2,14 +2,12 @@
   File        :   JUnitReporter.cls
   Package     :   OEUnit.Reporters
   Description :   JUnit XML Format Reporter Class.
-  Author      :   Mark Abbott
 ------------------------------------------------------------------------------*/
 
-USING OEUnit.Reporters.OEUnitReporter.
+USING OEUnit.Automation.BaseReporter.
 USING OEUnit.Runner.*.
-USING Progress.Lang.*.
 
-CLASS OEUnit.Reporters.JUnitReporter INHERITS OEUnitReporter:
+CLASS OEUnit.Automation.JUnitReporter INHERITS BaseReporter:
   
   /*----------------------------------------------------------------------------
     File name and path for output XML file.
@@ -22,7 +20,6 @@ CLASS OEUnit.Reporters.JUnitReporter INHERITS OEUnitReporter:
     Class constructor. fName is path and file name for output XML file.
   ----------------------------------------------------------------------------*/  
   CONSTRUCTOR PUBLIC JUnitReporter(INPUT fName AS CHARACTER):
-	SUPER().
 	
 	FileName = fName.
 	

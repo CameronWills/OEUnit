@@ -3,7 +3,6 @@
   Package     :   OEUnit.Reflection
   Description :   The exception thrown when a quit condition occurs while running
                   MethodInfo:Invoke().
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

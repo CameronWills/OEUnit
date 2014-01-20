@@ -6,7 +6,6 @@
   File        :   ResultsWindow.w
   Package     :   OEUnit.UI
   Description :   Displays the results of a test run in a window.
-  Author      :   Cameron Wills    
 ------------------------------------------------------------------------*/
 /*          This .W file was created with the Progress AppBuilder.      */
 /*----------------------------------------------------------------------*/

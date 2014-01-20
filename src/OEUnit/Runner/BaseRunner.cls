@@ -3,7 +3,6 @@
   Package     :   OEUnit.Runner
   Description :   Base class for a test runner. Custom runners should inherit 
                   from OEUnit.Runners.OEUnitRunner instead of this class. 
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 

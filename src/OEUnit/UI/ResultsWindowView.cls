@@ -3,7 +3,6 @@
   Package     :   OEUnit.UI
   Description :   Results view for windows based user-interfaces (GUI). Displays
                   results in a window that can be docked in OpenEdge Architect.
-  Author      :   Cameron Wills    
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

@@ -3,7 +3,6 @@
   Package     :   OEUnit.Reflection
   Description :   Stores information about a METHOD statement appearing in a class 
                   definition (e.g. a test method).
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

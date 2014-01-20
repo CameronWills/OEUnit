@@ -5,7 +5,6 @@
                   definition (e.g. a CLASS or METHOD statement). Stores 
                   the name and list of annotations. Annotations must precede 
                   the statement to be included.
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

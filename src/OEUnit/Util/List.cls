@@ -4,7 +4,6 @@
   Description :   Stores an indexed list of object references. List elements can 
                   be accessed by their index. New elements can be inserted or
                   appended to the list.   
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
@@ -122,7 +121,7 @@ CLASS OEUnit.Util.List:
       FIND element WHERE element.ind = indx NO-ERROR.
       IF AVAILABLE(element) THEN DO:
         returnObj = element.obj.
-        RemoveCurrent(false).
+        RemoveCurrent(FALSE).
         RETURN returnObj.
       END.
     END.

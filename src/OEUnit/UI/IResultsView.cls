@@ -4,7 +4,6 @@
   Description :   Classes implementing the IResultView interface can be used by
                   the ResultsPresenter to display the results of a test run to 
                   the user.
-  Author      :   Cameron Wills                  
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

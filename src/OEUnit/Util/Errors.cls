@@ -4,7 +4,6 @@
   Description : Helper methods for extracting error messages from the 
                 ERROR-STATUS/COMPILER system handles and instances of 
                 Progress.Lang.Error.
-  Author      : Cameron Wills
 ------------------------------------------------------------------------------*/
 
 CLASS OEUnit.Util.Errors:

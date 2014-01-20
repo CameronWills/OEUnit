@@ -10,8 +10,7 @@
                     runner:Notifier = NEW RunNotifier(). 
                     runner:Notifier:AddRunListener(NEW MyRunListener1).
                     runner:Notifier:AddRunListener(NEW MyRunListener2).
-                   
-  Author      :   Cameron Wills
+
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

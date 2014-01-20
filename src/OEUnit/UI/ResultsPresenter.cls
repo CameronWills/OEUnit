@@ -5,7 +5,6 @@
                   Passes the test results to an IResultsView and provides a 
                   number of methods for the UI to interact with the testing 
                   framework.
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
@@ -25,15 +24,12 @@ CLASS OEUnit.UI.ResultsPresenter:
     Reruns the given test class (must be the full class type-name). Optionally 
     specify the name of a test method name to run that method only. 
   ----------------------------------------------------------------------------*/
-  METHOD PUBLIC STATIC VOID RerunTest(INPUT className AS CHARACTER, INPUT methodName AS CHARACTER):
+  METHOD PUBLIC STATIC VOID RerunTest(INPUT classType AS CHARACTER, INPUT methodName AS CHARACTER):
     
     DEFINE VARIABLE test AS Progress.Lang.Object NO-UNDO.
     DEFINE VARIABLE filter AS MethodFilter NO-UNDO.
     
-    test = DYNAMIC-NEW (className) () NO-ERROR.
-    IF ERROR-STATUS:ERROR THEN 
-      RETURN ERROR NEW AppError("Failed to create instance of '" + className 
-        + "'.~r~n" + Errors:GetMessage(INPUT ERROR-STATUS:HANDLE),0).
+    test = Instance:FromType(classType).
     IF methodName <> "" AND methodName <> ? THEN
       filter = NEW MethodFilter(methodName).
     RunTest:WithDefault(test, ?, filter).
@@ -47,15 +43,16 @@ CLASS OEUnit.UI.ResultsPresenter:
   /*----------------------------------------------------------------------------
     Run the given file as a test. Must be a valid class file (.cls).
   ----------------------------------------------------------------------------*/   
-  METHOD PUBLIC STATIC VOID RunAsTest(INPUT classFileName AS CHARACTER):
-    IF NOT(classFileName MATCHES "*.cls") THEN
-      RETURN ERROR NEW AppError("File is not a valid test case/suite. Must be a class file (.cls).",0).
+  METHOD PUBLIC STATIC VOID RunAsTest(INPUT classFile AS CHARACTER):
+        
+    DEFINE VARIABLE test AS Progress.Lang.Object NO-UNDO.
+    test = Instance:FromFile(classFile).
     
-    DEFINE VARIABLE classTypeName AS CHARACTER NO-UNDO.
-    classTypeName = ClassType:FromFile(classFileName).
+    RunTest:WithDefault(test, ?, ?).
     
-    RerunTest(classTypeName, "").
-    
+    FINALLY:
+      DELETE OBJECT test NO-ERROR.
+    END FINALLY.
   END METHOD.
  
   /*----------------------------------------------------------------------------

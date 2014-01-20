@@ -1,47 +1,71 @@
 /*------------------------------------------------------------------------------
-  File        :   ClassType.cls
+  File        :   Instance.cls
   Package     :   OEUnit.Util
-  Description :   Helper for getting the class type name from a class file. 
-                  Hacky but necessary as COMPILER:CLASS-TYPE does not give
-                  the expected value following class compilation.
-  Author      :   Cameron Wills
+  Description :   Helper for getting a new instance of a class from a class file
+                  or type name. Hacky but necessary as COMPILER:CLASS-TYPE does 
+                  not always give the expected value following class compilation
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 USING OEUnit.Util.*.
+USING Progress.Lang.Object.
 
-CLASS OEUnit.Util.ClassType:
+CLASS OEUnit.Util.Instance:
 
   /*----------------------------------------------------------------------------
     Construct a ClassInfo instance representing the given object.
   ----------------------------------------------------------------------------*/
-  METHOD PUBLIC STATIC CHARACTER FromFile(INPUT classFile AS CHARACTER):
+  METHOD PUBLIC STATIC Object FromFile(INPUT classFile AS CHARACTER):
+    
+    IF NOT(classFile MATCHES "*.cls") THEN
+      RETURN ERROR "Cannot create instance of '" + classFile + "'. Must be a class file (.cls).".
+    
+    DO ON ERROR UNDO, THROW:
+      DEFINE VARIABLE xrefFile AS CHARACTER NO-UNDO.
+      xrefFile = GUID(GENERATE-UUID) + ".xml".
+     
+      Errors:Initalize().
+    
+      /* Suppress warning codes before compile */
+      Warnings:Suppress().
+      COMPILE VALUE(classFile) XREF-XML VALUE(xrefFile).
+    
+      IF COMPILER:ERROR AND COMPILER:NUM-MESSAGES > 0 THEN
+        RETURN ERROR "Failed to compile '" + classFile
+          + "'.~r~n" + Errors:GetMessage(INPUT COMPILER:HANDLE).
 
-    DEFINE VARIABLE xrefFile AS CHARACTER NO-UNDO.
-    xrefFile = GUID(GENERATE-UUID) + ".xml".
+      DEFINE VARIABLE classType AS CHARACTER NO-UNDO.
+      classType = COMPILER:CLASS-TYPE.
+      IF classType = ? OR TRIM(classType) = "" THEN
+        classType = GetClassType(xrefFile).
     
-    Errors:Initalize().
+      RETURN FromType(classType).
     
-    /* Suppress warning codes before compile */
-    Warnings:Suppress().
-    COMPILE VALUE(classFile) XREF-XML VALUE(xrefFile).
-    
-    IF COMPILER:ERROR AND COMPILER:NUM-MESSAGES > 0 THEN
-      RETURN ERROR "Failed to compile '" + classFile
-        + "'.~r~n" + Errors:GetMessage(INPUT COMPILER:HANDLE).
-
-    RETURN GetClassType(xrefFile).
-    
-    FINALLY:
-      Warnings:Restore().
-      /* No need to delete typeClass, as instances of Progress.Lang.Class are
-         singletons that cannot be deleted */
+      FINALLY:
+        Warnings:Restore().
+        /* No need to delete typeClass, as instances of Progress.Lang.Class are
+           singletons that cannot be deleted */
        
-      OS-DELETE VALUE(xrefFile).
-    END FINALLY.
+        OS-DELETE VALUE(xrefFile).
+      END FINALLY.
+    END.
     
   END METHOD.
+  
+  /*----------------------------------------------------------------------------
+    Parses the xref-xml file looking for the class type name. 
+  ----------------------------------------------------------------------------*/   
+  METHOD PUBLIC STATIC Object FromType(INPUT classType AS CHARACTER):
+    DEFINE VARIABLE instance AS Object NO-UNDO.
+    
+    instance = DYNAMIC-NEW (classType) () NO-ERROR.
+    IF ERROR-STATUS:ERROR THEN 
+      RETURN ERROR "Failed to create instance of '" + classType 
+        + "'.~r~n" + Errors:GetMessage(INPUT ERROR-STATUS:HANDLE).
+   
+    RETURN instance.
+  END METHOD.  
 
   /*----------------------------------------------------------------------------
     Parses the xref-xml file looking for the class type name. 

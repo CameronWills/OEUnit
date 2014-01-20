@@ -6,8 +6,7 @@
   File        :   DetailsWindow.w
   Package     :   OEUnit.UI
   Description :   Display the details of a single test result and it's errors.
-  Author      :   Cameron Wills    
-                  
+                 
 ------------------------------------------------------------------------*/
 /*          This .W file was created with the Progress AppBuilder.      */
 /*----------------------------------------------------------------------*/

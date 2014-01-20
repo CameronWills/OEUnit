@@ -8,7 +8,6 @@
                   with the @Ignore annotation. To monitor a test run, enlist an 
                   instance of OEUnit.Runner.Notification.RunNotifier. Custom 
                   runners should inherit from this class.
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW. 

@@ -3,7 +3,6 @@
   Package     :   OEUnit.Runner
   Description :   Base Test Result class. Represents the result of running a 
                   single test. Inherited by TestClassResult and TestMethodResult.
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 

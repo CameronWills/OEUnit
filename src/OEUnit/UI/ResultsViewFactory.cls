@@ -1,8 +1,7 @@
 /*------------------------------------------------------------------------------
   File        :   ResultsViewFactory.cls
   Package     :   OEUnit.UI
-  Description :   Factory for the different Results Views. 
-  Author      :   Cameron Wills    
+  Description :   Factory for the different Results Views.  
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

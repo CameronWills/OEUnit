@@ -2,8 +2,7 @@
   File        :   ResultsTextView.cls
   Package     :   OEUnit.UI
   Description :   Results view for character based user-interfaces (TTY). More
-                  work to be done on this... 
-  Author      :   Cameron Wills    
+                  work to be done on this...  
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

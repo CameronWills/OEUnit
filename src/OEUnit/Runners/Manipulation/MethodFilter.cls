@@ -3,7 +3,6 @@
   Package     :   OEUnit.Runners.Manipulation   
   Description :   Filter used to run a single test method in a test case. All 
                   other test methods are ignored.
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

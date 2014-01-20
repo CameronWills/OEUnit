@@ -2,7 +2,6 @@
   File        : OEUnitAnnotations.cls
   Package     : OEUnit.Runners
   Description : Houses the syntax for ABL Annotations specific to OEUnit.
-  Author      : Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

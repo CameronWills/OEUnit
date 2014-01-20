@@ -21,8 +21,7 @@
                       END METHOD.
                         
                     END CLASS.
-                  
-  Author      :   Cameron Wills
+
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

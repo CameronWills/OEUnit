@@ -12,7 +12,10 @@ Below is a screenshot of the test results docked in Progress Developer Studio (p
 ##Change Log
 ###1.4
 
-- Integrated Jamie Townsend's version of OEUnit that supports PCT with current release of OEUnit.
+- Merged changes to better support automation and XML reporting. Thanks to Arek Jaworski and Mark Abbott.
+- Refactored merged changes to remove redundant code sections and folder structure
+- Removed 'Author' from the file headers - a leftover relic from a heading template and not conducive to social coding :)
+- Tested with OpenEdge 11.3
 
 ###1.3
 

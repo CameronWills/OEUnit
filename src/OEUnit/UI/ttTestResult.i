@@ -3,7 +3,6 @@
   Package     :   OEUnit.UI
   Description :   Temp-table to house all test results from a test run. Used 
                   by ResultsWindow to display results in a browse widget.
-  Author      :   Cameron Wills                  
 ------------------------------------------------------------------------------*/
 
 DEFINE {&access} TEMP-TABLE ttTestResult {&reference}

@@ -7,7 +7,6 @@
                   and no result/s are stored for them. A typical use of a filter
                   may be if you only wanted to run a single test method in a 
                   test case. 
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

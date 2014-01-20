@@ -3,7 +3,6 @@
   Package     :   OEUnit.Reflection
   Description :   Constructs an instance of ClassInfo representing a given object 
                   (typically an instance of a test case or test suite). 
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

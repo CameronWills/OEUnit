@@ -17,8 +17,6 @@
 	                    END CONSTRUCTOR.
                                         
                     END CLASS.
-                      
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

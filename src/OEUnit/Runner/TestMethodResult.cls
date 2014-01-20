@@ -3,7 +3,6 @@
   Package     :   OEUnit.Runner
   Description :   Represents the test result for single test method. A method
                   needs to be annotated with @Test to run as a test method.
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

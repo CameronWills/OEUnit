@@ -3,8 +3,7 @@
   Package     : OEUnit.Util
   Description : Objects implementing the IComparator interface can be passed to  
                 the SortElements() method on OEUnit.Util.List, to control the 
-                order of the list elements. 
-  Author      : Cameron Wills
+                order of the list elements.
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

@@ -5,13 +5,8 @@
                   from OpenEdge Architect.  The OutputDirectory must be passed
                   in as the only entry in the "Paramters" field in the
                   Customization Editor.
-  Author      :   Jamie Townsend
-  Revisions   :   1.0 - November, 2010
-                  Initial Implementation.
                   
 ------------------------------------------------------------------------------*/
-
-USING OEUnit.Logger.TestExecutor.
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
@@ -25,4 +20,7 @@ ASSIGN
   TestLocation    = ENTRY(2, ipParam, CHR(3)) 
   .
 
-TestExecutor:RunAsTest(INPUT OutputDirectory, INPUT TestLocation).
+DEFINE VARIABLE hasErrors AS LOGICAL NO-UNDO.
+
+RUN OEUnit/Automation/Pct/RunTests(INPUT OutputDirectory, INPUT TestLocation, OUTPUT hasErrors).
+

@@ -5,7 +5,6 @@
                   Contains a list of child test results. The child results may
                   themselves contain more child test results, reflecting the 
                   tree-like structure of the tests.
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

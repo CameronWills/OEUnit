@@ -3,7 +3,6 @@
   Package     :   OEUnit.Reflection
   Description :   Stores information about an ABL class definition (typically a 
                   test case or test suite class).
-  Author      :   Cameron Wills
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.

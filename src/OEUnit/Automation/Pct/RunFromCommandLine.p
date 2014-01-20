@@ -1,18 +1,13 @@
 /*------------------------------------------------------------------------------
-  File        :   CommandLineResultsLogger.p
+  File        :   RunFromCommandLine.p
   Package     :   OEUnit.Logger
-  Description :   Wrapper of ResultsLogger.p to enable it to be easily invoked
-                  from the command line.  The OutputDirectory and TestLocation
+  Description :   Wrapper of RunTests.p to enable it to be easily invoked
+                  from the command line. The OutputDirectory and TestLocation
                   must be passed into the session using a comma separated
                   value containing the OutputDirectory and TestLocation:
                     -param "<OutputDirectory>,<TestLocation>"
-  Author      :   Jamie Townsend
-  Revisions   :   1.0 - November, 2010
-                  Initial Implementation.
-                  
-------------------------------------------------------------------------------*/
 
-USING OEUnit.Logger.TestExecutor.
+------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
@@ -31,9 +26,10 @@ ASSIGN
   TestLocation    = ENTRY(2, SESSION:PARAMETER)
   .
 
-TestExecutor:RunAsTest(INPUT OutputDirectory, INPUT TestLocation).
+DEFINE VARIABLE hasErrors AS LOGICAL NO-UNDO.
+RUN OEUnit/Automation/Pct/RunTests(INPUT OutputDirectory, INPUT TestLocation, OUTPUT hasErrors).
 
-IF TestExecutor:hasErrors THEN
+IF hasErrors THEN
   RETURN "1".
 ELSE
   RETURN "0".
