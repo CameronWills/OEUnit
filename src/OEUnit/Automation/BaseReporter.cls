@@ -4,6 +4,7 @@
   Description :   Base Reporter Class. Custom reporters should inherit from this
                   class.
 ------------------------------------------------------------------------------*/
+ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 USING OEUnit.Runner.*.
 

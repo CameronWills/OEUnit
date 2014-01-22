@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <title>OEUnit - Reporting Test Results</title>
+</head>
+<body>
+    <table class="menu" cellpadding="10" cellspacing="0">
+        <tr>
+            <td >
+                <h2>OEUnit - Unit Testing Framework</h2>
+                <ul class="menuItems">
+                    <li><a href="index.html">Overview</a></li>
+                    <li><a href="installation.html">Installation</a></li>
+                    <li><a href="testcase.html">Writing a Test Case</a></li>
+                    <li><a href="testsuite.html">Writing a Test Suite</a></li>
+                    <li><a href="runningtests.html">Running a Test</a></li>
+                    <li>Reporting Test Results</li>
+                    <li><a href="license.html">License</a></li>
+                    <li><a href="changelog.html">Change Log</a></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <h1>Reporting Test Results</h1>
+
+    <h2>Reporting Tests</h2>
+    <p>Once a test case or test suite has been run, the results can be reported in a variety of formats. If the appropriate format is not already available, a custom reporter can be created to output the results as required.</p>
+    <p>In basic terms, reporting the test results is a case of:
+       <ol>
+          <li>Defining an BaseReporter object variable</li>
+          <li>Instantiating an BaseReporter sub-class object</li>
+          <li>Calling the BaseReporter's "Report" method, passing in the Test runner.</li>
+       </ol>
+    </p>
+    <p>For example (using the Text reporter):</p>
+    <pre class="code"> <span class="keyword">ROUTINE-LEVEL ON ERROR UNDO, THROW.
+
+ USING</span> OEUnit.Runners.OEUnitRunner.
+ <span class="keyword">USING</span> OEUnit.Automation.BaseReporter.
+ <span class="keyword">USING</span> OEUnit.Automation.TextReporter.
+
+ <span class="comment">/* Create an instance of your test case or suite */</span>
+ <span class="keyword">DEFINE VARIABLE</span> suite <span class="keyword">AS</span> SimpleSuite <span class="keyword">NO-UNDO</span>.
+ suite = <span class="keyword">NEW</span> SimpleSuite().
+
+ <span class="comment">/* Create an instance of the runner */</span>
+ <span class="keyword">DEFINE VARIABLE</span> runner <span class="keyword">AS</span> OEUnitRunner <span class="keyword">NO-UNDO</span>.
+ runner = <span class="keyword">NEW</span> OEUnitRunner().
+
+ <span class="comment">/* Create an instance of the reporter */</span>
+ <span class="keyword">DEFINE VARIABLE</span> reporter <span class="keyword">AS</span> BaseReporter <span class="keyword">NO-UNDO</span>.
+ reporter = <span class="keyword">NEW</span> TextReporter("report.txt").
+
+ <span class="comment">/* Run your test case or suite */</span>
+ runner:RunTest(suite).
+
+ <span class="comment">/* Display the results */</span>
+ <span class="keyword">MESSAGE</span> runner:Results:ToString() <span class="keyword">VIEW-AS ALERT-BOX</span>.
+
+ <span class="comment">/* Report the results */</span>
+ reporter:Report(runner).
+
+ <span class="comment">/* Delete the test and runner */</span>
+ <span class="keyword">FINALLY:
+   DELETE OBJECT</span> reporter <span class="keyword">NO-ERROR.
+   DELETE OBJECT</span> suite <span class="keyword">NO-ERROR.
+   DELETE OBJECT</span> runner <span class="keyword">NO-ERROR.
+ END FINALLY</span>.</pre>
+
+    <h2>Available Reporters</h2>
+
+    <h3>CSV Reporter</h3>
+    <h4>Description</h4>
+    <p>Outputs the results into a CSV based format</p>
+    <h4>Constructor Parameters</h4>
+    <table class="paramlist">
+      <thead>
+        <tr>
+          <th>Parameter Name</th>
+          <th>Data Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>fName</td>
+          <td>CHARACTER</td>
+          <td>Path and File name where the output will be saved</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>JUnit Reporter</h3>
+    <h4>Description</h4>
+    <p>Outputs the results into an XML file which is compatible with JUnit output.</p>
+    <h4>Constructor Parameters</h4>
+    <table class="paramlist">
+      <thead>
+        <tr>
+          <th>Parameter Name</th>
+          <th>Data Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>fName</td>
+          <td>CHARACTER</td>
+          <td>Path and File name where the output will be saved</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>SureFire Reporter</h3>
+    <h4>Description</h4>
+    <p>Outputs the results into an XML file which is compatible with SureFire output.</p>
+    <h4>Constructor Parameters</h4>
+    <table class="paramlist">
+      <thead>
+        <tr>
+          <th>Parameter Name</th>
+          <th>Data Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>outputDirectoryName</td>
+          <td>CHARACTER</td>
+          <td>Directory where the output files will be saved</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>Text Reporter</h3>
+    <h4>Description</h4>
+    <p>Outputs the results into a text file, formatted by the ToString() method of the TestResult class.</p>
+    <h4>Constructor Parameters</h4>
+    <table class="paramlist">
+      <thead>
+        <tr>
+          <th>Parameter Name</th>
+          <th>Data Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>fName</td>
+          <td>CHARACTER</td>
+          <td>Path and File name where the output will be saved</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="footer">Cameron Wills, 2011.</div>
+</body>
+</html>
