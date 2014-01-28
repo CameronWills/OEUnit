@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------------------
   File        :   RunFromCommandLine.p
-  Package     :   OEUnit.Logger
+  Package     :   OEUnit.Automation.Pct
   Description :   Wrapper of RunTests.p to enable it to be easily invoked
                   from the command line. The OutputDirectory and TestLocation
                   must be passed into the session using a comma separated

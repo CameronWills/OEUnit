@@ -5,6 +5,7 @@
                 ERROR-STATUS/COMPILER system handles and instances of 
                 Progress.Lang.Error.
 ------------------------------------------------------------------------------*/
+ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 CLASS OEUnit.Util.Errors:
 

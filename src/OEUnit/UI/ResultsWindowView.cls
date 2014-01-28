@@ -2,7 +2,8 @@
   File        :   ResultsWindowView.cls
   Package     :   OEUnit.UI
   Description :   Results view for windows based user-interfaces (GUI). Displays
-                  results in a window that can be docked in OpenEdge Architect.
+                  results in a window that can be docked in Progress Developer 
+                  Studio.
 ------------------------------------------------------------------------------*/
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
@@ -25,6 +26,13 @@ CLASS OEUnit.UI.ResultsWindowView IMPLEMENTS IResultsView:
   DEFINE PRIVATE STATIC VARIABLE testCount AS INTEGER NO-UNDO.
   
   /*----------------------------------------------------------------------------
+    Store the details of the last test run - so it may be easily rerun.
+  ----------------------------------------------------------------------------*/  
+  DEFINE PRIVATE STATIC VARIABLE lastClassFile AS CHARACTER NO-UNDO.
+  DEFINE PRIVATE STATIC VARIABLE lastClassName AS CHARACTER NO-UNDO.
+  DEFINE PRIVATE STATIC VARIABLE lastMethodName AS CHARACTER NO-UNDO.
+  
+  /*----------------------------------------------------------------------------
     Handle to the persistently run ResultsWindow procedure. 
   ----------------------------------------------------------------------------*/
   DEFINE PRIVATE STATIC VARIABLE resultWindow AS HANDLE NO-UNDO.
@@ -36,10 +44,30 @@ CLASS OEUnit.UI.ResultsWindowView IMPLEMENTS IResultsView:
     END GET.
 
   /*----------------------------------------------------------------------------
+    Run the given file as a test. Must be a valid class file (.cls).
+  ----------------------------------------------------------------------------*/   
+  METHOD PUBLIC STATIC VOID RunAsTest(INPUT classFileName AS CHARACTER):
+    ASSIGN 
+        lastClassName = ""
+        lastMethodName = ""
+        lastClassFile = classFileName.
+    DisplayRunning(classFileName).
+    ResultsPresenter:RunAsTest(classFileName).
+    CATCH e AS Progress.Lang.Error :
+      DisplayError(classFileName, e).
+      DELETE OBJECT e NO-ERROR. 
+    END CATCH.
+  END METHOD.
+
+  /*----------------------------------------------------------------------------
     Reruns the given test class (must be the full class type-name). Optionally 
     specify the name of a test method name to run that method only.
   ----------------------------------------------------------------------------*/   
   METHOD PUBLIC STATIC VOID RerunTest(INPUT className AS CHARACTER, INPUT methodName AS CHARACTER):
+    ASSIGN 
+        lastClassName = className
+        lastMethodName = methodName
+        lastClassFile = "".
     DisplayRunning(className).
     ResultsPresenter:RerunTest(className, methodName).
     CATCH e AS Progress.Lang.Error :
@@ -48,16 +76,14 @@ CLASS OEUnit.UI.ResultsWindowView IMPLEMENTS IResultsView:
     END CATCH.
   END METHOD.
 
-  /*----------------------------------------------------------------------------
-    Run the given file as a test. Must be a valid class file (.cls).
+/*----------------------------------------------------------------------------
+    Reruns the last run test class (and filtered method if set) 
   ----------------------------------------------------------------------------*/   
-  METHOD PUBLIC STATIC VOID RunAsTest(INPUT classFileName AS CHARACTER):
-    DisplayRunning(classFileName).
-    ResultsPresenter:RunAsTest(classFileName).
-    CATCH e AS Progress.Lang.Error :
-      DisplayError(classFileName, e).
-      DELETE OBJECT e NO-ERROR. 
-    END CATCH.
+  METHOD PUBLIC STATIC VOID RerunTest():
+    IF lastClassFile <> "" THEN
+        RunAsTest(lastClassFile).
+    ELSE IF lastClassName <> "" THEN
+        RerunTest(lastClassName, lastMethodName).
   END METHOD.
 
   /*----------------------------------------------------------------------------
