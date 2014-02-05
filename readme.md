@@ -4,6 +4,9 @@ OEUnit is a unit testing framework for OpenEdge ABL. OEUnit is intended to help 
 
 For full documentation, see **doc/index.html** in the repository.
 
+##Download
+See the [Releases](https://github.com/CameronWills/OEUnit/releases) page.
+
 ##Screenshot
 Below is a screenshot of the test results docked in Progress Developer Studio (previously OpenEdge Architect).
 
@@ -12,22 +15,24 @@ Below is a screenshot of the test results docked in Progress Developer Studio (p
 ##Change Log
 ###1.4
 
+- version 1.4 requires OpenEdge 10.2B03
 - Merged changes to better support automation and XML reporting. Thanks to Arek Jaworski and Mark Abbott.
 - Refactored merged changes to remove redundant code sections and folder structure
 - Removed 'Author' from the file headers - a leftover relic from a heading template and not conducive to social coding :)
-- Tested with OpenEdge 11.3
+- Tested with OpenEdge 11.3 on Windows 7 64bit
 
 ###1.3
 
+- Version 1.3 requires OpenEdge 10.B03
 - Fixed bug where the results window would display for a moment and then disappear.
 - Fixed bug where compile error 468 is thrown when r-code already exists for a test class (Compile aborted. SAVE not specified and r-code file exists)
 - Fixed bug the DYNAMIC-NEW failed to create an instance based on the class file-name alone. When r-code was also present in the directory.
 - Improved documentation in line with the new Progress Developer Studio (previously named OpenEdge Architect)
-- Tested with OpenEdge 11.2
+- Tested with OpenEdge 11.2 on Windows 7 64bit
 
 ###1.2
 
-- OEUnit 1.2 requires OpenEdge 10.2b
+- Version 1.2 requires OpenEdge 10.2B
 - Changes to show the error message returned from simple RETURN ERROR "error message" statements
 - Updated UI/ResultsWindow.w to show 'RUNNING' while tests are running
 - Increased the default height & width of the UI/DetailsWindow.w and improved general readability
