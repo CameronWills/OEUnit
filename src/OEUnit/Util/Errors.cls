@@ -50,5 +50,27 @@ CLASS OEUnit.Util.Errors:
     END.
     RETURN errorMessage.
   END METHOD.
+  
+  /*----------------------------------------------------------------------------
+    Truncate noisy OEUnit stack trace lines from error's callstack 
+  ----------------------------------------------------------------------------*/  
+  METHOD PUBLIC STATIC CHARACTER TrimCallStack(INPUT callStack AS CHARACTER):
+    
+    DEFINE VARIABLE trimmed AS CHARACTER NO-UNDO.
+    DEFINE VARIABLE stackLine AS CHARACTER NO-UNDO.
+    
+    DEFINE VARIABLE i AS INTEGER NO-UNDO.
+    DO i = 1 TO NUM-ENTRIES(callStack, "~n"):
+        stackLine = ENTRY(i, callStack, "~n").
+        IF stackLine BEGINS "Invoke OEUnit.Reflection.MethodInfo" THEN DO:
+            trimmed = trimmed + ". . .".
+            RETURN trimmed.
+        END.
+        IF NOT stackLine MATCHES "* OEUnit.Assertion.Assert at*" THEN
+            trimmed = trimmed + stackLine + "~n".
+    END.
+    
+    RETURN callStack.
+  END METHOD.
 
 END CLASS.

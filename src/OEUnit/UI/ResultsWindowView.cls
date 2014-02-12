@@ -212,8 +212,8 @@ CLASS OEUnit.UI.ResultsWindowView IMPLEMENTS IResultsView:
     ASSIGN ttError.TestId = ttTestResult.TestId
            ttError.ErrorId = errorId 
            ttError.ErrorMessage = Errors:GetMessage(err)
-           ttError.CallStack = err:GetClass():TypeName + " at" + CHR(13) 
-             + err:CallStack.
+           ttError.CallStack = err:GetClass():TypeName + " at~n" 
+             + Errors:TrimCallStack(err:CallStack).
     
   END METHOD.
  
