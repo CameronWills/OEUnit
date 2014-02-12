@@ -36,7 +36,7 @@ CLASS OEUnit.Assertion.Assert:
     Asserts that condition is true. If not then throws an AssertionFailedError.
   ----------------------------------------------------------------------------*/
   METHOD STATIC VOID IsTrue(INPUT condition AS LOGICAL):
-    HandleAssert(condition, "yes", STRING(condition), TRUE).
+    HandleAssert(condition, STRING(TRUE), STRING(condition), TRUE).
   END METHOD.
 
   /*----------------------------------------------------------------------------
@@ -44,14 +44,14 @@ CLASS OEUnit.Assertion.Assert:
     with the given failMessage.
   ----------------------------------------------------------------------------*/
   METHOD STATIC VOID IsTrue(INPUT condition AS LOGICAL, INPUT failMessage AS CHARACTER):
-    HandleAssert(condition, "yes", STRING(condition), TRUE, failMessage).
+    HandleAssert(condition, STRING(TRUE), STRING(condition), TRUE, failMessage).
   END METHOD.
 
   /*----------------------------------------------------------------------------
     Asserts that condition is false. If not then throws an AssertionFailedError.
   ----------------------------------------------------------------------------*/
   METHOD STATIC VOID IsFalse(INPUT condition AS LOGICAL):
-    HandleAssert(NOT(condition), "no", STRING(condition), TRUE).
+    HandleAssert(NOT(condition), STRING(FALSE), STRING(condition), TRUE).
   END METHOD.
 
   /*----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ CLASS OEUnit.Assertion.Assert:
     with the given failMessage.
   ----------------------------------------------------------------------------*/
   METHOD STATIC VOID IsFalse(INPUT condition AS LOGICAL, INPUT failMessage AS CHARACTER):
-    HandleAssert(NOT(condition), "no", STRING(condition), TRUE, failMessage).
+    HandleAssert(NOT(condition), STRING(FALSE), STRING(condition), TRUE, failMessage).
   END METHOD.
 
   /*----------------------------------------------------------------------------
@@ -247,7 +247,7 @@ CLASS OEUnit.Assertion.Assert:
   METHOD PRIVATE STATIC VOID HandleAssert(INPUT success AS LOGICAL, INPUT expected AS CHARACTER, 
     INPUT actual AS CHARACTER, INPUT expectedEqual AS LOGICAL, INPUT failMessage AS CHARACTER):
 
-    IF NOT success THEN DO:
+    IF NOT success OR success = ? THEN DO:
       IF failMessage = ? THEN DO:
         IF expectedEqual THEN
           failMessage = "Expecting: " + ReplaceNull(expected) + " but found: " + ReplaceNull(actual).

@@ -4,7 +4,7 @@ USING OEUnit.Assertion.*.
 USING OEUnit.Tests.Assertion.*.
 
 CLASS OEUnit.Tests.Assertion.AssertTest:
-  
+
   @Test.
   METHOD PUBLIC VOID Fails():
     DO ON ERROR UNDO, THROW:
@@ -15,6 +15,71 @@ CLASS OEUnit.Tests.Assertion.AssertTest:
       END CATCH.
     END.
     Assert:Fail().
+  END METHOD.
+
+  @Test.
+  METHOD PUBLIC VOID IsTrue():
+
+    Assert:IsTrue(TRUE).
+
+    DO ON ERROR UNDO, THROW:
+      Assert:IsTrue(FALSE).
+      CATCH e AS AssertionFailedError:
+        DELETE OBJECT e NO-ERROR.
+        RETURN.         
+      END CATCH.      
+    END.
+    Assert:Fail().    
+  END METHOD.  
+
+  @Test.
+  METHOD PUBLIC VOID IsFalse():
+    Assert:IsFalse(FALSE).
+
+    DO ON ERROR UNDO, THROW:
+      Assert:IsFalse(TRUE).
+      CATCH e AS AssertionFailedError:
+        DELETE OBJECT e NO-ERROR.
+        RETURN.         
+      END CATCH.      
+    END.
+    Assert:Fail().    
+  END METHOD.
+
+  @Test.
+  METHOD PUBLIC VOID NullIsNotTrue():
+    
+    DEFINE VARIABLE myLog AS LOGICAL NO-UNDO INIT ?.
+    
+    Assert:AreNotEqual(?,TRUE).
+    Assert:AreNotEqual(myLog, TRUE).
+    
+    DO ON ERROR UNDO, THROW:
+      Assert:IsTrue(?).
+      CATCH e AS AssertionFailedError:
+        DELETE OBJECT e NO-ERROR.
+        RETURN.         
+      END CATCH.      
+    END.
+    Assert:Fail().    
+  END METHOD.  
+  
+  @Test.
+  METHOD PUBLIC VOID NullIsNotFalse():
+    
+    DEFINE VARIABLE myLog AS LOGICAL NO-UNDO INIT ?.
+    
+    Assert:AreNotEqual(?,FALSE).
+    Assert:AreNotEqual(myLog, FALSE).
+
+    DO ON ERROR UNDO, THROW:
+      Assert:IsFalse(?).
+      CATCH e AS AssertionFailedError:
+        DELETE OBJECT e NO-ERROR.
+        RETURN.         
+      END CATCH.      
+    END.
+    Assert:Fail().    
   END METHOD.
 
   @Test.
