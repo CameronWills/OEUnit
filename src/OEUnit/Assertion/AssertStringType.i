@@ -38,8 +38,8 @@
     throws an AssertionFailedError with the given failMessage.
   ----------------------------------------------------------------------------*/
   METHOD STATIC VOID IsNotNullOrEmpty(INPUT val AS {&DataType}, INPUT failMessage AS CHARACTER):
-    Assert:IsNotNull(val).
-    Assert:AreNotEqual(val, "").
+    Assert:IsNotNull(val, failMessage).
+    Assert:AreNotEqual(val, "", failMessage).
   END METHOD.  
 
   /*----------------------------------------------------------------------------
