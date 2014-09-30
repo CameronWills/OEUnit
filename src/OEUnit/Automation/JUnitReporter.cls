@@ -41,8 +41,9 @@ CLASS OEUnit.Automation.JUnitReporter INHERITS FileReporter:
   ----------------------------------------------------------------------------*/  
   METHOD PROTECTED VOID ReportTestClassResult(INPUT hSaxWriter AS HANDLE, INPUT results AS TestClassResult):
       
-      DEFINE VARIABLE HasChildSuites AS LOGICAL NO-UNDO INITIAL FALSE.
-      DEFINE VARIABLE i              AS INTEGER NO-UNDO.
+      DEFINE VARIABLE HasChildSuites AS LOGICAL   NO-UNDO INITIAL FALSE.
+      DEFINE VARIABLE i              AS INTEGER   NO-UNDO.
+      DEFINE VARIABLE Package        AS CHARACTER NO-UNDO.
       
       /* Determine if there are any child TestClassResult items - if so, this
        * needs to be output as a "testsuites" element, not a "testsuite".
@@ -71,11 +72,20 @@ CLASS OEUnit.Automation.JUnitReporter INHERITS FileReporter:
       IF NOT HasChildSuites THEN
       DO:
           hSaxWriter:INSERT-ATTRIBUTE("skipped", STRING(results:CountTestsWithStatus(TestResult:StatusIgnored))).
+          
+          /* Determine package name by removing class name from end of full class name */
+          ASSIGN Package = results:GetName()
+                 i       = R-INDEX(Package, ".").
+
+          IF(i > 1) THEN
+              ASSIGN Package = SUBSTRING(Package,1, i - 1).
+
+          hSaxWriter:INSERT-ATTRIBUTE("package", TRIM(Package,".")).
+          
           /* The following attributes are not implementable at this point in time, but are available in the
            * JUnit XML format. Uncomment, and implement when possible.
            */
           /* hSaxWriter:INSERT-ATTRIBUTE("id",        ""). */
-          /* hSaxWriter:INSERT-ATTRIBUTE("package",   ""). */
           /* hSaxWriter:INSERT-ATTRIBUTE("hostname",  ""). */
           /* hSaxWriter:INSERT-ATTRIBUTE("timestamp", ""). */
       END.
