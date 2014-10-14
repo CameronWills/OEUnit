@@ -8,6 +8,7 @@ CLASS OEUnit.Tests.Util.AllTestSuite INHERITS TestSuite:
   
   CONSTRUCTOR AllTestSuite():
     AddTest(NEW ListTest()).
+    AddTest(NEW NamedListTest()).
   END CONSTRUCTOR.
 
 END CLASS.
