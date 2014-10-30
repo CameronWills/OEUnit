@@ -7,6 +7,7 @@ CLASS OEUnit.Tests.AllTestSuite INHERITS TestSuite:
   
   CONSTRUCTOR AllTestSuite():
     AddTest(NEW OEUnit.Tests.Assertion.AllTestSuite()).
+    AddTest(NEW OEUnit.Tests.Data.AllTestSuite()).
     AddTest(NEW OEUnit.Tests.Reflection.AllTestSuite()).
     AddTest(NEW OEUnit.Tests.Runner.AllTestSuite()).
     AddTest(NEW OEUnit.Tests.Runners.AllTestSuite()).
