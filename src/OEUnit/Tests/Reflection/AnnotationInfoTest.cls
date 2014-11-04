@@ -16,16 +16,13 @@ CLASS OEUnit.Tests.Reflection.AnnotationInfoTest:
   METHOD PUBLIC VOID ParseAnnotationNoAttribute():
     annotation = NEW AnnotationInfo("Annotation").
     Assert:AreEqual(annotation:AnnotationType, "Annotation").
-    Assert:AreEqual(annotation:AttributeName, "").
-    Assert:AreEqual(annotation:AttributeValue, "").
+    Assert:AreEqual(annotation:Attributes:Size, 0).
   END METHOD.
 
   @Test.
   METHOD PUBLIC VOID ParseAnnotationWithAttribute():
     annotation = NEW AnnotationInfo("Annotation(Attribute=Value)").
     Assert:AreEqual(annotation:AnnotationType, "Annotation").
-    Assert:AreEqual(annotation:AttributeName, "Attribute").
-    Assert:AreEqual(annotation:AttributeValue, "Value").
     Assert:AreEqual(annotation:Attributes:Size, 1).
     Assert:IsTrue(annotation:HasAttribute("Attribute")).
     Assert:AreEqual(annotation:GetAttribute("Attribute"), "Value").
@@ -35,8 +32,6 @@ CLASS OEUnit.Tests.Reflection.AnnotationInfoTest:
   METHOD PUBLIC VOID ParseAnnotationComplexAttribute():
     annotation = NEW AnnotationInfo("Annotation(a=5+1=6)").
     Assert:AreEqual(annotation:AnnotationType, "Annotation").
-    Assert:AreEqual(annotation:AttributeName, "a").
-    Assert:AreEqual(annotation:AttributeValue, "5+1=6").
     Assert:AreEqual(annotation:Attributes:Size, 1).
     Assert:IsTrue(annotation:HasAttribute("a")).
     Assert:AreEqual(annotation:GetAttribute("a"), "5+1=6").

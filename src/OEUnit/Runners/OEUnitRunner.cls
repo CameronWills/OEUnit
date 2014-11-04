@@ -208,16 +208,16 @@ CLASS OEUnit.Runners.OEUnitRunner INHERITS BaseRunner:
         
     testAnnotation = testMethod:GetAnnotationOfType(OEUnitAnnotations:Test).      
     testMethod:Invoke().
-    IF testAnnotation:AttributeName = OEUnitAnnotations:TestExpectedAttribute THEN 
-      RETURN ERROR NEW AssertionFailedError("Expecting error: " + testAnnotation:AttributeValue).
+    IF testAnnotation:HasAttribute(OEUnitAnnotations:TestExpectedAttribute) THEN
+      RETURN ERROR NEW AssertionFailedError("Expecting error: " + testAnnotation:GetAttribute(OEUnitAnnotations:TestExpectedAttribute)).
     
     CATCH assertionFailed AS AssertionFailedError:
       RETURN ERROR assertionFailed.
     END CATCH.
     
     CATCH err AS Progress.Lang.Error:
-      IF testAnnotation:AttributeName = OEUnitAnnotations:TestExpectedAttribute THEN DO:
-        IF IsTypeOf(err, GetExpectedErrorType(testAnnotation:AttributeValue)) THEN DO:
+      IF testAnnotation:HasAttribute(OEUnitAnnotations:TestExpectedAttribute) THEN DO:
+        IF IsTypeOf(err, GetExpectedErrorType(testAnnotation:GetAttribute(OEUnitAnnotations:TestExpectedAttribute))) THEN DO:
           DELETE OBJECT err NO-ERROR.
         END.
         ELSE

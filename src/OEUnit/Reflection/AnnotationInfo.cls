@@ -19,8 +19,6 @@ CLASS OEUnit.Reflection.AnnotationInfo:
       AnnotationType(AttributeName=AttributeValue)
   ----------------------------------------------------------------------------*/
   DEFINE PUBLIC PROPERTY AnnotationType AS CHARACTER NO-UNDO GET. PRIVATE SET.
-  DEFINE PUBLIC PROPERTY AttributeName AS CHARACTER NO-UNDO GET. PRIVATE SET.
-  DEFINE PUBLIC PROPERTY AttributeValue AS CHARACTER NO-UNDO GET. PRIVATE SET.
   
   /*----------------------------------------------------------------------------
     Annotation attributes. Defined by the syntax below: 
@@ -43,8 +41,6 @@ CLASS OEUnit.Reflection.AnnotationInfo:
     ASSIGN
       AnnotationType = ENTRY(1, annotationString, "(")
       attribute = TRIM(SUBSTRING(annotationString, LENGTH(AnnotationType) + 1),"()")
-      AttributeName = ENTRY(1, attribute, "=")
-      AttributeValue = SUBSTRING(attribute, LENGTH(AttributeName) + 2).
       
     Attributes = NEW NamedList().
     IF attribute NE "" AND attribute NE ? THEN ParseAttributes(attribute).
