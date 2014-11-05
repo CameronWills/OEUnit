@@ -43,6 +43,60 @@ CLASS OEUnit.Tests.Data.DataProviderTest:
     END METHOD.
     
     @Test.
+    METHOD PUBLIC VOID FromXML():
+        dataProvider = NEW DataProvider().
+        dataProvider:FromXML('<?xml version="1.0"?>'
+                           + '<data>'
+                           + '<dataRow>'
+                           + '  <status>NEW</status>'
+                           + '  <accepted>true</accepted>'
+                           + '</dataRow>'
+                           + '<dataRow>'
+                           + '  <status>ACCEPTED</status>'
+                           + '  <accepted>true</accepted>'
+                           + '</dataRow>'
+                           + '</data>').
+        Assert:AreEqual(dataProvider:Size, 2).
+    END METHOD.
+    
+    @Test.
+    METHOD PUBLIC VOID FromXML_Reset():
+        dataProvider = NEW DataProvider().
+        dataProvider:FromXML('<?xml version="1.0"?>'
+                           + '<data>'
+                           + '<dataRow>'
+                           + '  <status>NEW</status>'
+                           + '  <accepted>true</accepted>'
+                           + '</dataRow>'
+                           + '<dataRow>'
+                           + '  <status>ACCEPTED</status>'
+                           + '  <accepted>true</accepted>'
+                           + '</dataRow>'
+                           + '</data>').
+        Assert:AreEqual(dataProvider:Size, 2).
+        dataProvider:FromXML('<?xml version="1.0"?>'
+                           + '<data>'
+                           + '<dataRow>'
+                           + '  <status>NEW</status>'
+                           + '  <accepted>true</accepted>'
+                           + '</dataRow>'
+                           + '<dataRow>'
+                           + '  <status>ACCEPTED</status>'
+                           + '  <accepted>true</accepted>'
+                           + '</dataRow>'
+                           + '<dataRow>'
+                           + '  <status>PICKING</status>'
+                           + '  <accepted>true</accepted>'
+                           + '</dataRow>'
+                           + '<dataRow>'
+                           + '  <status>POSTED</status>'
+                           + '  <accepted>false</accepted>'
+                           + '</dataRow>'
+                           + '</data>').
+        Assert:AreEqual(dataProvider:Size, 4).
+    END METHOD.
+    
+    @Test.
     METHOD PUBLIC VOID MoveFirst():
         dataProvider = NEW DataProvider().
         

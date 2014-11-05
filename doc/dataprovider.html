@@ -169,6 +169,32 @@
             <span class="keyword">READ-JSON</span> method.</li>
         <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
     </ul>
+   <p><b>METHOD PUBLIC LOGICAL FromXML(INPUT xml AS LONGCHAR)</b></p>
+   <p>This method is used to load data from XML data stored in a <span class="keyword">LONGCHAR</span>.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The structure of the XML data should match that which is accepted by an OpenEdge <span class="keyword">DATASET</span>
+            or <span class="keyword">TEMP-TABLE</span> when using the <span class="keyword">READ-XML</span> method.</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+        <li>It is advised to specify the XML Schema in the XML data in order for data types to be correctly interpreted.</li>
+    </ul>
+   <p><b>METHOD PUBLIC LOGICAL FromXMLFile(INPUT path AS CHARACTER):</b></p>
+   <p>This method is used to load data from XML data stored in a file. The file path should be provided as the 
+      <span class="keyword">INPUT</span> parameter.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The structure of the XML data in the file should match that which is accepted by an OpenEdge 
+            <span class="keyword">DATASET</span> or <span class="keyword">TEMP-TABLE</span> when using the 
+            <span class="keyword">READ-XML</span> method.</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+        <li>It is advised to specify the XML Schema in the XML data in order for data types to be correctly interpreted.</li>
+    </ul>
     <div class="footer">
         Cameron Wills, 2011.</div>
 </body>

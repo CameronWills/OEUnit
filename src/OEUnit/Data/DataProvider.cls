@@ -65,6 +65,26 @@ CLASS OEUnit.Data.DataProvider:
     RETURN res.
   END METHOD.
 
+  METHOD PUBLIC LOGICAL FromXML(INPUT xml AS LONGCHAR):
+    DEFINE VARIABLE res AS LOGICAL NO-UNDO.
+    IF VALID-HANDLE(ttQuery) THEN DELETE OBJECT ttQuery.
+    IF VALID-HANDLE(ttData) THEN DELETE OBJECT ttData.
+    CREATE TEMP-TABLE ttData.
+    res = ttData:READ-XML("LONGCHAR", xml, "EMPTY", ?, ?).
+    CountSize().
+    RETURN res.
+  END METHOD.
+
+  METHOD PUBLIC LOGICAL FromXMLFile(INPUT path AS CHARACTER):
+    DEFINE VARIABLE res AS LOGICAL NO-UNDO.
+    IF VALID-HANDLE(ttQuery) THEN DELETE OBJECT ttQuery.
+    IF VALID-HANDLE(ttData) THEN DELETE OBJECT ttData.
+    CREATE TEMP-TABLE ttData.
+    res = ttData:READ-XML("FILE", path, "EMPTY", ?, ?).
+    CountSize().
+    RETURN res.
+  END METHOD.
+
   METHOD PUBLIC Progress.Lang.ParameterList GetParameterList():
     DEFINE VARIABLE numParams   AS INTEGER NO-UNDO.
     DEFINE VARIABLE bufHandle   AS HANDLE  NO-UNDO.
