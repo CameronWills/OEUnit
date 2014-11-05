@@ -8,6 +8,10 @@ USING OEUnit.Data.DataProvider.
 
 CLASS OEUnit.Tests.Data.DataProviderTest:
     
+    DEFINE PROTECTED TEMP-TABLE ttTestTable NO-UNDO
+      FIELD StatusCode AS CHARACTER
+      FIELD Accepted   AS LOGICAL.
+    
     DEFINE VARIABLE dataProvider AS DataProvider NO-UNDO.
 
     @After.
@@ -94,6 +98,49 @@ CLASS OEUnit.Tests.Data.DataProviderTest:
                            + '</dataRow>'
                            + '</data>').
         Assert:AreEqual(dataProvider:Size, 4).
+    END METHOD.
+    
+    @Test.
+    METHOD PUBLIC VOID FromTempTable():
+        dataProvider = NEW DataProvider().
+        EMPTY TEMP-TABLE ttTestTable.
+        CREATE ttTestTable.
+        ASSIGN ttTestTable.StatusCode = "NEW"
+               ttTestTable.Accepted = TRUE. 
+        CREATE ttTestTable.
+        ASSIGN ttTestTable.StatusCode = "ACCEPTED"
+               ttTestTable.Accepted = TRUE.
+        dataProvider:FromTempTable(TEMP-TABLE ttTestTable:HANDLE).
+        Assert:AreEqual(dataProvider:Size, 2).
+    END METHOD.
+    
+    @Test.
+    METHOD PUBLIC VOID FromTempTable_Reset():
+        dataProvider = NEW DataProvider().
+        EMPTY TEMP-TABLE ttTestTable.
+        CREATE ttTestTable.
+        ASSIGN ttTestTable.StatusCode = "NEW"
+               ttTestTable.Accepted = TRUE. 
+        CREATE ttTestTable.
+        ASSIGN ttTestTable.StatusCode = "ACCEPTED"
+               ttTestTable.Accepted = TRUE.
+        CREATE ttTestTable.
+        ASSIGN ttTestTable.StatusCode = "PICKING"
+               ttTestTable.Accepted = FALSE. 
+        CREATE ttTestTable.
+        ASSIGN ttTestTable.StatusCode = "POSTED"
+               ttTestTable.Accepted = FALSE.
+        dataProvider:FromTempTable(TEMP-TABLE ttTestTable:HANDLE).
+        Assert:AreEqual(dataProvider:Size, 4).
+        EMPTY TEMP-TABLE ttTestTable.
+        CREATE ttTestTable.
+        ASSIGN ttTestTable.StatusCode = "NEW"
+               ttTestTable.Accepted = TRUE. 
+        CREATE ttTestTable.
+        ASSIGN ttTestTable.StatusCode = "ACCEPTED"
+               ttTestTable.Accepted = TRUE.
+        dataProvider:FromTempTable(TEMP-TABLE ttTestTable:HANDLE).
+        Assert:AreEqual(dataProvider:Size, 2).
     END METHOD.
     
     @Test.

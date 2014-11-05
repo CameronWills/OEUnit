@@ -84,6 +84,16 @@ CLASS OEUnit.Data.DataProvider:
     CountSize().
     RETURN res.
   END METHOD.
+  
+  METHOD PUBLIC LOGICAL FromTempTable(INPUT ttSrc AS HANDLE):
+    DEFINE VARIABLE res AS LOGICAL NO-UNDO.
+    IF VALID-HANDLE(ttQuery) THEN DELETE OBJECT ttQuery.
+    IF VALID-HANDLE(ttData) THEN DELETE OBJECT ttData.
+    CREATE TEMP-TABLE ttData.
+    res = ttData:COPY-TEMP-TABLE(ttSrc).
+    CountSize().
+    RETURN res.
+  END METHOD.
 
   METHOD PUBLIC Progress.Lang.ParameterList GetParameterList():
     DEFINE VARIABLE numParams   AS INTEGER NO-UNDO.

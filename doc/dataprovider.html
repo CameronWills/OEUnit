@@ -195,6 +195,18 @@
         <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
         <li>It is advised to specify the XML Schema in the XML data in order for data types to be correctly interpreted.</li>
     </ul>
+   <p><b>METHOD PUBLIC LOGICAL FromTempTable(INPUT ttSrc AS HANDLE):</b></p>
+   <p>This method is used to load data from an existing temp-table, via the provided <span class="keyword">HANDLE INPUT</span> parameter.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The entire data and metaschema of the temp-table are copied.</li>
+        <li>Data is copied in EMPTY mode</li>
+        <li>The data and metaschema of the provided source temp-table are not affected.</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+    </ul>
     <div class="footer">
         Cameron Wills, 2011.</div>
 </body>
