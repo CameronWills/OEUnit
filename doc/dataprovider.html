@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <title>OEUnit - DataProviders</title>
+</head>
+<body>
+    <table class="menu" cellpadding="10" cellspacing="0">
+        <tr>
+            <td>
+                <h2>OEUnit - Unit Testing Framework</h2>
+                <ul class="menuItems">
+                    <li><a href="index.html">Overview</a></li>
+                    <li><a href="installation.html">Installation</a></li>
+                    <li><a href="testcase.html">Writing a Test Case</a></li>
+                    <li><a href="testsuite.html">Writing a Test Suite</a></li>
+                    <li><a href="runningtests.html">Running a Test</a></li>
+                    <li><a href="reportingtests.html">Reporting Test Results</a></li>
+                    <li>DataProviders</li>
+                    <li><a href="license.html">License</a></li>
+                    <li><a href="changelog.html">Change Log</a></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <h1>
+        DataProviders
+    </h1>
+    <h2>What is a DataProvider?</h2>
+    <p>
+        A DataProvider is a class method inside of a test case, which provides data which is passed
+        to individual test methods as method parameters.<br />
+        <br />
+        A test method declares that is requires a DataProvider when it is defined, using the <code>dataProvider</code>
+        attribute, supplying the name of a DataProvider method as the attribute value.<br />
+        <br />
+        A class method is defined with the <code class="keyword">@DataProvider</code> annotation, with an optional
+        <code>name</code> attribute. This method returns an object of type <code>OEUnit.Data.DataProvider</code> which
+        contains the data that will be used to repeatedly invoke the test method.
+    </p>
+    <h2>How to use a DataProvider</h2>
+    <p>
+        1. Define a test method, with <code class="keyword">INPUT</code> parameters for each test variable.<br />
+        Use the <code>dataProvider</code> attribute to specify the name of a class method which will provide data
+        for the test variables.<br />
+        For example:</p>
+    <pre class="code"> <span class="keyword">ROUTINE-LEVEL ON ERROR UNDO, THROW.
+
+ USING</span> OEUnit.Assertion.Assert.
+ <span class="keyword">USING</span> OEUnit.Data.DataProvider.
+
+ <span class="keyword">CLASS</span> SimpleTest:
+   
+   @Test (dataProvider=StatusChangeProvider). 
+   <span class="keyword">METHOD PUBLIC VOID</span> AcceptStatusChange(<span class="keyword">INPUT</span> varStatus AS CHARACTER, <span class="keyword">INPUT</span> varAccepted AS LOGICAL): 
+     <span class="keyword">DEFINE VARIABLE</span> result <span class="keyword">AS LOGICAL NO-UNDO.</span>
+     result = Order:ChangeStatus(INPUT varStatus). 
+     Assert:AreEqual(result,varAccepted). 
+   <span class="keyword">END METHOD</span>.    
+
+ <span class="keyword">END CLASS</span>.</pre>
+    <p>
+        <br />
+        2. Add a method to the class which returns a DataProvider object.<br />
+        Use the <code class="keyword">@DataProvider</code> annotation to indicate that the class is a DataProvider method.<br/>
+        For example:</p>
+    <pre class="code">   @DataProvider. 
+   <span class="keyword">METHOD PUBLIC </span>DataProvider StatusChangeProvider(): 
+     <span class="keyword">DEFINE VARIABLE</span> dataProvider <span class="keyword">AS</span> DataProvider <span class="keyword">NO-UNDO</span>.
+     dataProvider = <span class="keyword">NEW</span> DataProvider().
+     dataProvider:FromJSON(<span class="literal">"~{ ~"data~": ["
+                            + "~{ ~"status~": ~"NEW~", ~"accepted~": true},"
+                            + "~{ ~"status~": ~"ACCEPTED~", ~"accepted": true},"
+                            + "~{ ~"status~": ~"PICKING~", ~"accepted": true},"
+                            + "~{ ~"status~": ~"POSTED~", ~"accepted": false},"
+                            + "~{ ~"status~": ~"DELIVERED~", ~"accepted": false},"
+                            + "~{ ~"status~": ~"CANCELLED~", ~"accepted": true},"
+                            + "]}"</span>).
+     <span class="keyword">RETURN</span> dataProvider.
+   <span class="keyword">END METHOD</span>.</pre> <p class="important">
+        <b>
+            <br />
+            Important Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The name of the <code>DataProvider</code> class method must match the value of the <code>dataProvider</code> 
+            attribute on the test method, <i>or</i> the <code class="keyword">@DataProvider</code> annotation must
+            have a <code>name</code> attribute which matches the value of the <code>dataProvider</code> 
+            attribute on the test method.</li>
+        <li>Execution of a DataProvider method will stop when an assertion fails or a <code>Progress.Lang.Error</code>
+            is thrown.</li>
+        <li>There are no special naming requirements for DataProvider methods.</li>
+        <li>DataProvider methods must be <code class="keyword">PUBLIC</code></li>
+        <li>DataProvider methods must accept no parameters.</li>
+        <li>DataProvider methods can be <code class="keyword">STATIC</code>.</li>
+        <li>DataProvider methods can be used by more than one test method.</li>
+        <li>Any <code class="keyword">@Before</code> methods are run before each test method invocation.</li>
+        <li>Any <code class="keyword">@After</code> methods are run after each test method invocation.</li>
+    </ul>
+    <p>
+        <br />
+        3. Run the test case as per normal.</p>
+    <p>
+        <br />
+        4. In the test case results, the test method will be listed multiple times with a separate status per invocation.</p>
+    <a name="methods"></a>
+    <h2>Name Attribute</h2>
+    <p>
+        Each method annotated with <code>@DataProvider</code> can specify a name attribute which is used
+        when searching for a DataProvider method, instead of the method name.
+    </p>
+    <p>
+        <b>Syntax:</b></p>
+    <p class="syntax">
+        <pre>   @DataProvider[(name="<i>DataProviderName</i>")].</pre></p>
+    <p class="syntax">
+        <i><b>DataProviderName</b></i><br />
+        &nbsp;&nbsp;&nbsp; The Name of the DataProvider. This name can then be specified by
+        a test method as its DataProvider, in the <code>dataProvider</code> attribute<br />
+    </p>
+    <p>
+        <b>
+            <br />
+            Example:</b>
+    </p>
+    <pre class="code">   @Test (dataProvider=StatusChangeProvider). 
+   <span class="keyword">METHOD PUBLIC VOID</span> AcceptStatusChange(<span class="keyword">INPUT</span> varStatus AS CHARACTER, <span class="keyword">INPUT</span> varAccepted AS LOGICAL): 
+     <span class="keyword">DEFINE VARIABLE</span> result <span class="keyword">AS LOGICAL NO-UNDO.</span>
+     result = Order:ChangeStatus(INPUT varStatus). 
+     Assert:AreEqual(result,varAccepted). 
+   <span class="keyword">END METHOD</span>.
+   
+      @DataProvider(name=StatusChangeProvider). 
+   <span class="keyword">METHOD PUBLIC </span>DataProvider myDataProvider(): 
+     <span class="keyword">DEFINE VARIABLE</span> dataProvider <span class="keyword">AS</span> DataProvider <span class="keyword">NO-UNDO</span>.
+     dataProvider = <span class="keyword">NEW</span> DataProvider().
+     dataProvider:FromJSON(<span class="literal">"~{ ~"data~": ["
+                            + "~{ ~"status~": ~"NEW~", ~"accepted~": true},"
+                            + "~{ ~"status~": ~"ACCEPTED~", ~"accepted": true},"
+                            + "~{ ~"status~": ~"PICKING~", ~"accepted": true},"
+                            + "~{ ~"status~": ~"POSTED~", ~"accepted": false},"
+                            + "~{ ~"status~": ~"DELIVERED~", ~"accepted": false},"
+                            + "~{ ~"status~": ~"CANCELLED~", ~"accepted": true},"
+                            + "]}"</span>).
+     <span class="keyword">RETURN</span> dataProvider.
+   <span class="keyword">END METHOD</span>.</pre>
+   <h2>DataProvider Methods</h2>
+   <p>The DataProvider class provides a range of methods for loading data into the DataProvider.</p>
+   <p><b>METHOD PUBLIC LOGICAL FromJSON(INPUT json AS LONGCHAR)</b></p>
+   <p>This method is used to load data from JSON text stored in a <span class="keyword">LONGCHAR</span>.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The structure of the JSON data should match that which is accepted by an OpenEdge <span class="keyword">DATASET</span>
+            or <span class="keyword">TEMP-TABLE</span> when using the <span class="keyword">READ-JSON</span> method.</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+    </ul>
+   <p><b>METHOD PUBLIC LOGICAL FromJSONFile(INPUT path AS CHARACTER):</b></p>
+   <p>This method is used to load data from JSON text stored in a file. The file path should be provided as the 
+      <span class="keyword">INPUT</span> parameter.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The structure of the JSON data in the file should match that which is accepted by an OpenEdge 
+            <span class="keyword">DATASET</span> or <span class="keyword">TEMP-TABLE</span> when using the 
+            <span class="keyword">READ-JSON</span> method.</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+    </ul>
+   <p><b>METHOD PUBLIC LOGICAL FromXML(INPUT xml AS LONGCHAR)</b></p>
+   <p>This method is used to load data from XML data stored in a <span class="keyword">LONGCHAR</span>.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The structure of the XML data should match that which is accepted by an OpenEdge <span class="keyword">DATASET</span>
+            or <span class="keyword">TEMP-TABLE</span> when using the <span class="keyword">READ-XML</span> method.</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+        <li>It is advised to specify the XML Schema in the XML data in order for data types to be correctly interpreted.</li>
+    </ul>
+   <p><b>METHOD PUBLIC LOGICAL FromXMLFile(INPUT path AS CHARACTER):</b></p>
+   <p>This method is used to load data from XML data stored in a file. The file path should be provided as the 
+      <span class="keyword">INPUT</span> parameter.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The structure of the XML data in the file should match that which is accepted by an OpenEdge 
+            <span class="keyword">DATASET</span> or <span class="keyword">TEMP-TABLE</span> when using the 
+            <span class="keyword">READ-XML</span> method.</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+        <li>It is advised to specify the XML Schema in the XML data in order for data types to be correctly interpreted.</li>
+    </ul>
+   <p><b>METHOD PUBLIC LOGICAL FromTempTable(INPUT ttSrc AS HANDLE):</b></p>
+   <p>This method is used to load data from an existing temp-table, via the provided <span class="keyword">HANDLE INPUT</span> parameter.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The entire data and metaschema of the temp-table are copied.</li>
+        <li>Data is copied in EMPTY mode</li>
+        <li>The data and metaschema of the provided source temp-table are not affected.</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+    </ul>
+    <div class="footer">
+        Cameron Wills, 2011.</div>
+</body>
+</html>

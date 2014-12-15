@@ -17,6 +17,7 @@ USING OEUnit.Reflection.*.
 USING OEUnit.Runner.*.
 USING OEUnit.Runners.OEUnitAnnotations.
 USING OEUnit.Util.*.
+USING OEUnit.Data.*.
 USING Progress.Lang.*.
 
 CLASS OEUnit.Runners.OEUnitRunner INHERITS BaseRunner:
@@ -158,13 +159,40 @@ CLASS OEUnit.Runners.OEUnitRunner INHERITS BaseRunner:
     Run all of the test methods in the given list.
   ----------------------------------------------------------------------------*/
   METHOD PROTECTED VOID RunTestMethods(INPUT testMethods AS List):
+    DEFINE VARIABLE meth AS MethodInfo NO-UNDO.
     testMethods:Reset().
     DO WHILE testMethods:MoveNext():
-      RunTestMethod(CAST(testMethods:Current, MethodInfo)).
+      meth = CAST(testMethods:Current, MethodInfo).
+      IF meth:RequiresDataProvider() THEN
+        RunTestMethodWithDataProvider(meth).
+      ELSE
+      RunTestMethod(meth).
     END.        
     FINALLY:
       DELETE OBJECT testMethods NO-ERROR.   		
     END FINALLY.
+  END METHOD.
+  
+  /*----------------------------------------------------------------------------
+    Run a single test method multiple times using the given DataProvider.
+  ----------------------------------------------------------------------------*/
+  METHOD PROTECTED VOID RunTestMethodWithDataProvider(INPUT testMethod AS MethodInfo):
+      
+    DEFINE VARIABLE dataProvider AS DataProvider NO-UNDO.
+    DEFINE VARIABLE moveResult   AS LOGICAL NO-UNDO.
+    DEFINE VARIABLE counter      AS INTEGER NO-UNDO INITIAL 0.
+    DEFINE VARIABLE methodResult AS TestMethodResult NO-UNDO.
+    DEFINE VARIABLE methodName   AS CHARACTER NO-UNDO.
+    dataProvider = testMethod:GetDataProvider().
+    IF NOT VALID-OBJECT(dataProvider) OR dataProvider = ? THEN
+      RETURN ERROR NEW DataProviderError("Invalid DataProvider object returned from method.").
+    methodName = testMethod:NAME.
+    moveResult = dataProvider:MoveFirst().
+    DO WHILE moveResult EQ TRUE:
+      counter = counter + 1.
+      RunTestMethod(testMethod,dataProvider:GetParameterList()).
+      moveResult = dataProvider:MoveNext().
+    END.
   END METHOD.
 
   /*----------------------------------------------------------------------------
@@ -172,6 +200,15 @@ CLASS OEUnit.Runners.OEUnitRunner INHERITS BaseRunner:
     thrown during the run are caught and stored in the result. 
   ----------------------------------------------------------------------------*/
    METHOD PROTECTED VOID RunTestMethod(INPUT testMethod AS MethodInfo):
+     RunTestMethod(INPUT testMethod, INPUT ?).
+   END METHOD.
+   
+   /*----------------------------------------------------------------------------
+    Run a single test method with the given parameters and store it's result. Any
+    Progress.Lang.Errors thrown during the run are caught and stored in the
+    result. 
+  ----------------------------------------------------------------------------*/
+   METHOD PROTECTED VOID RunTestMethod(INPUT testMethod AS MethodInfo, INPUT paramList AS Progress.Lang.ParameterList):
 
     DEFINE VARIABLE methodResult AS TestMethodResult NO-UNDO.
     methodResult = NEW TestMethodResult(testMethod).
@@ -181,7 +218,7 @@ CLASS OEUnit.Runners.OEUnitRunner INHERITS BaseRunner:
       ETIME(TRUE).
       RunBefores(currentInfo:GetAnnotatedMethods(OEUnitAnnotations:Before)).
       ETIME(TRUE).
-      CallTestMethod(testMethod).
+      CallTestMethod(testMethod,paramList).
       methodResult:SetStatus(TestResult:StatusPassed).
       CATCH err AS Progress.Lang.Error :
         methodResult:AddError(err).
@@ -203,21 +240,33 @@ CLASS OEUnit.Runners.OEUnitRunner INHERITS BaseRunner:
     during the test, the error is re-thrown to the caller. 
   ----------------------------------------------------------------------------*/
   METHOD PROTECTED VOID CallTestMethod(INPUT testMethod AS MethodInfo):
+      CallTestMethod(testMethod, ?).
+  END METHOD.
+  
+  /*----------------------------------------------------------------------------
+    Invoke the given test method with the given parameter list. If an unexpected 
+    Progress.Lang.Error is thrown during the test, the error is re-thrown to the 
+    caller. 
+  ----------------------------------------------------------------------------*/
+  METHOD PROTECTED VOID CallTestMethod(INPUT testMethod AS MethodInfo, INPUT paramList AS Progress.Lang.ParameterList):
 
     DEFINE VARIABLE testAnnotation AS AnnotationInfo NO-UNDO.
         
-    testAnnotation = testMethod:GetAnnotationOfType(OEUnitAnnotations:Test).      
-    testMethod:Invoke().
-    IF testAnnotation:AttributeName = OEUnitAnnotations:TestExpectedAttribute THEN 
-      RETURN ERROR NEW AssertionFailedError("Expecting error: " + testAnnotation:AttributeValue).
+    testAnnotation = testMethod:GetAnnotationOfType(OEUnitAnnotations:Test).
+    IF paramList NE ? AND VALID-OBJECT(paramList) THEN   
+        testMethod:Invoke(paramList).
+    ELSE
+        testMethod:Invoke().
+    IF testAnnotation:HasAttribute(OEUnitAnnotations:TestExpectedAttribute) THEN
+      RETURN ERROR NEW AssertionFailedError("Expecting error: " + testAnnotation:GetAttribute(OEUnitAnnotations:TestExpectedAttribute)).
     
     CATCH assertionFailed AS AssertionFailedError:
       RETURN ERROR assertionFailed.
     END CATCH.
     
     CATCH err AS Progress.Lang.Error:
-      IF testAnnotation:AttributeName = OEUnitAnnotations:TestExpectedAttribute THEN DO:
-        IF IsTypeOf(err, GetExpectedErrorType(testAnnotation:AttributeValue)) THEN DO:
+      IF testAnnotation:HasAttribute(OEUnitAnnotations:TestExpectedAttribute) THEN DO:
+        IF IsTypeOf(err, GetExpectedErrorType(testAnnotation:GetAttribute(OEUnitAnnotations:TestExpectedAttribute))) THEN DO:
           DELETE OBJECT err NO-ERROR.
         END.
         ELSE

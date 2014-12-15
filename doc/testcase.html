@@ -16,6 +16,7 @@
                     <li><a href="testsuite.html">Writing a Test Suite</a></li>
                     <li><a href="runningtests.html">Running a Test</a></li>
                     <li><a href="reportingtests.html">Reporting Test Results</a></li>
+                    <li><a href="dataprovider.html">DataProviders</a></li>
                     <li><a href="license.html">License</a></li>
                     <li><a href="changelog.html">Change Log</a></li>
                 </ul>
@@ -77,13 +78,18 @@
     <p>
         <b>Syntax:</b></p>
     <p class="syntax">
-        <pre>   @Test[(expected="<i>ErrorTypeName</i>")].</pre></p>
+        <pre>   @Test[([expected="<i>ErrorTypeName</i>"][,dataProvider="DataProviderMethod"])].</pre></p>
     <p class="syntax">
         <i><b>ErrorTypeName</b></i><br />
         &nbsp;&nbsp;&nbsp; The Type-Name of a class that inherits from <code>Progress.Lang.Error</code>.
         Informs the test runner that an error of this type is expected to be thrown by this
         Test method. If the expected error is thrown, the test passes, otherwise the test
         fails.<br />
+    </p>
+    <p class="syntax">
+        <i><b>DataProviderMethod</b></i><br />
+        &nbsp;&nbsp;&nbsp; The name of a method that has been defined with a @DataProvider annotation.
+        For more information on DataProviders, see <a href="dataprovider.html">Data Providers</a>.
     </p>
     <p>
         <b>
@@ -120,7 +126,11 @@
         <li>If no errors are thrown by while running a Test method, the test is assumed to have
             succeeded.</li>
         <li>There are no special naming requirements for Test methods.</li>
-        <li>Test methods must be <code class="keyword">PUBLIC</code> and accept no parameters.</li>
+        <li>Test methods must be <code class="keyword">PUBLIC</code></li>
+        <li>Test methods must accept no parameters, <i>unless</i> they have been defined with the DataProvider
+            attribute. In which case, the number of parameters, data types, and order must match the order of
+            the data provided in the @DataProvider method. Only the INPUT parameter type is supported. For more
+            infomation on DataProviders, see <a href="dataprovider.html">DataProviders</a>.</li>
         <li>Test methods can be <code class="keyword">STATIC</code>.</li>
     </ul>
     <h2>Before Methods</h2>
