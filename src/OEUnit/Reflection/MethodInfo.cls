@@ -90,42 +90,9 @@ CLASS OEUnit.Reflection.MethodInfo INHERITS StatementInfo:
     data provider method for this MethodInfo.
   ----------------------------------------------------------------------------*/
   METHOD PUBLIC MethodInfo GetDataProviderInfo():
-
-    DEFINE VARIABLE annotation             AS AnnotationInfo NO-UNDO.
-    DEFINE VARIABLE dataProviderAnnotation AS AnnotationInfo NO-UNDO.
-    DEFINE VARIABLE dataProviders          AS List           NO-UNDO.
-    DEFINE VARIABLE dataProviderName       AS CHARACTER      NO-UNDO.
-    DEFINE VARIABLE dataProvider           AS MethodInfo     NO-UNDO.
-    DEFINE VARIABLE result                 AS LOGICAL        NO-UNDO INITIAL FALSE.
-
-    /* If this is a @Test, with a "DataProvider=" attribute, then attempt to
-     * find the data provider method
-     */
-    annotation = GetAnnotationOfType(OEUnitAnnotations:Test).
-
-    IF annotation NE ? AND annotation:HasAttribute("dataProvider") THEN
-    DO:
-      dataProviderName = annotation:Attributes:Get(OEUnitAnnotations:TestDataProviderAttribute).
-      dataProviders = parentInfo:GetAnnotatedMethods(OEUnitAnnotations:DataProvider).
-
-      /* Find first data provider with that name attribute or method name */
-      dataProviders:MoveFirst().
-      dataProviderLoop:
-      DO WHILE dataProviders:CURRENT NE ?:
-        dataProvider = CAST(dataProviders:CURRENT,"MethodInfo").
-        dataProviderAnnotation = dataProvider:GetAnnotationOfType(OEUnitAnnotations:DataProvider).
-        IF (dataProviderAnnotation:HasAttribute("name") = TRUE) THEN
-        DO:
-          IF dataProviderName = dataProviderAnnotation:Attributes:Get(OEUnitAnnotations:DataProviderNameAttribute) THEN
-            LEAVE dataProviderLoop.
-        END.
-        ELSE IF dataProvider:Name = dataProviderName THEN LEAVE dataProviderLoop.
-        ELSE dataProvider = ?.
-        dataProviders:MoveNext().
-      END.
-    END.
-
-    RETURN dataProvider.
+    RETURN GetAssociatedMethodInfo(INPUT OEUnitAnnotations:TestDataProviderAttribute,
+                                   INPUT OEUnitAnnotations:DataProvider,
+                                   INPUT OEUnitAnnotations:DataProviderNameAttribute).
   END METHOD.
 
   /*----------------------------------------------------------------------------
@@ -160,6 +127,52 @@ CLASS OEUnit.Reflection.MethodInfo INHERITS StatementInfo:
     /* HACK: To accomodate bug in OpenEdge runtime, crashes when returning custom
              error instances on stop conditions */
     RETURN ERROR NEW StopConditionError("Stop condition occured").
+  END METHOD.
+
+  
+  /*----------------------------------------------------------------------------
+    Returns another MethodInfo object for a method indicated in the attributes
+    in this MethodInfo.
+  ----------------------------------------------------------------------------*/
+  METHOD PROTECTED MethodInfo GetAssociatedMethodInfo(INPUT methodAttribute      AS CHARACTER,
+                                                      INPUT associatedAnnotation AS CHARACTER,
+                                                      INPUT associatedAttribute  AS CHARACTER):
+
+    DEFINE VARIABLE TestAnnotation       AS AnnotationInfo NO-UNDO.
+    DEFINE VARIABLE MethodAnnotation     AS AnnotationInfo NO-UNDO.
+    DEFINE VARIABLE AnnotatedMethods     AS List           NO-UNDO.
+    DEFINE VARIABLE AssociatedMethodName AS CHARACTER      NO-UNDO.
+    DEFINE VARIABLE AssociatedMethodInfo AS MethodInfo     NO-UNDO.
+    DEFINE VARIABLE result               AS LOGICAL        NO-UNDO INITIAL FALSE.
+
+    /* If this is a @Test, with a "Fixture=" attribute, then attempt to
+     * find the data provider method
+     */
+    TestAnnotation = GetAnnotationOfType(OEUnitAnnotations:Test).
+
+    IF TestAnnotation NE ? AND TestAnnotation:HasAttribute(methodAttribute) THEN
+    DO:
+      AssociatedMethodName = TestAnnotation:Attributes:Get(methodAttribute).
+      AnnotatedMethods = parentInfo:GetAnnotatedMethods(associatedAnnotation).
+
+      /* Find first data provider with that name attribute or method name */
+      AnnotatedMethods:MoveFirst().
+      MethodLoop:
+      DO WHILE AnnotatedMethods:CURRENT NE ?:
+        AssociatedMethodInfo = CAST(AnnotatedMethods:CURRENT,"MethodInfo").
+        MethodAnnotation = AssociatedMethodInfo:GetAnnotationOfType(associatedAnnotation).
+        IF (MethodAnnotation:HasAttribute(associatedAttribute) = TRUE) THEN
+        DO:
+          IF AssociatedMethodName = MethodAnnotation:Attributes:Get(associatedAttribute) THEN
+            LEAVE MethodLoop.
+        END.
+        ELSE IF AssociatedMethodInfo:Name = AssociatedMethodName THEN LEAVE MethodLoop.
+        ELSE AssociatedMethodInfo = ?.
+        AnnotatedMethods:MoveNext().
+      END.
+    END.
+
+    RETURN AssociatedMethodInfo.
   END METHOD.
 
 END CLASS.
