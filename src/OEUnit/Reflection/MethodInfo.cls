@@ -129,6 +129,49 @@ CLASS OEUnit.Reflection.MethodInfo INHERITS StatementInfo:
     RETURN ERROR NEW StopConditionError("Stop condition occured").
   END METHOD.
 
+  /*----------------------------------------------------------------------------
+    Returns another MethodInfo object which holds the information regarding the
+    fixture method for this MethodInfo.
+  ----------------------------------------------------------------------------*/
+  METHOD PUBLIC MethodInfo GetFixtureInfo():
+    RETURN GetAssociatedMethodInfo(INPUT OEUnitAnnotations:TestFixtureAttribute,
+                                   INPUT OEUnitAnnotations:Fixture,
+                                   INPUT OEUnitAnnotations:FixtureNameAttribute).
+  END METHOD.
+
+  /*----------------------------------------------------------------------------
+    Determines whether this method has a @Test annotation with a Fixture
+    attribute, and a method with a matching @Fixture attribute exists.
+  ----------------------------------------------------------------------------*/
+  METHOD PUBLIC LOGICAL RequiresFixture():
+    RETURN (GetFixtureInfo() NE ?).
+  END METHOD.
+
+  /*----------------------------------------------------------------------------
+    Returns a Fixture object from the invocation of a Fixture method.
+  ----------------------------------------------------------------------------*/
+  METHOD PUBLIC Fixture GetFixture():
+    DEFINE VARIABLE fixtureMethod AS MethodInfo NO-UNDO.
+    DEFINE VARIABLE Fixture   AS Fixture NO-UNDO.
+    DO ON ERROR UNDO, THROW
+       ON QUIT UNDO, RETURN ERROR NEW QuitConditionError("Quit condition occured")
+       ON STOP UNDO, LEAVE:
+      fixtureMethod = GetFixtureInfo().
+      IF fixtureMethod NE ? AND VALID-OBJECT(fixtureMethod) THEN
+      DO:
+          IF fixtureMethod:IsStatic THEN
+            Fixture = DYNAMIC-INVOKE(fixtureMethod:ParentInfo:Name, fixtureMethod:Name).
+          ELSE
+            Fixture = DYNAMIC-INVOKE(fixtureMethod:ParentInfo:ClassInstance, fixtureMethod:Name).
+      END.
+      
+      RETURN Fixture.
+    END.
+
+    /* HACK: To accomodate bug in OpenEdge runtime, crashes when returning custom
+             error instances on stop conditions */
+    RETURN ERROR NEW StopConditionError("Stop condition occured").
+  END METHOD.
   
   /*----------------------------------------------------------------------------
     Returns another MethodInfo object for a method indicated in the attributes
