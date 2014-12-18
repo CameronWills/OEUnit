@@ -204,17 +204,40 @@ CLASS OEUnit.Runners.OEUnitRunner INHERITS BaseRunner:
    END METHOD.
    
    /*----------------------------------------------------------------------------
-    Run a single test method with the given parameters and store it's result. Any
-    Progress.Lang.Errors thrown during the run are caught and stored in the
+    Run a single test method with the given parameters and store it's result. If
+    a test fixture is required, it will be extracted and a transaction started.
+    Any Progress.Lang.Errors thrown during the run are caught and stored in the
     result. 
   ----------------------------------------------------------------------------*/
    METHOD PROTECTED VOID RunTestMethod(INPUT testMethod AS MethodInfo, INPUT paramList AS Progress.Lang.ParameterList):
+       
+       IF testMethod:RequiresFixture() THEN
+       DO:
+           OEUnitFixtureTransaction:
+           DO TRANSACTION
+            ON ERROR UNDO, THROW:
+              RunTestMethod(INPUT testMethod, testMethod:GetFixture(), INPUT paramList).
+              UNDO OEUnitFixtureTransaction, LEAVE OEUnitFixtureTransaction.
+           END.
+       END.
+       ELSE 
+           RunTestMethod(INPUT testMethod, INPUT ?, INPUT paramList).
+   END METHOD.
+   
+   /*----------------------------------------------------------------------------
+    Run a single test method with the given fixure object and parameters and 
+    store it's result. If a fixture is provided, no transaction is started in
+    this method. Any Progress.Lang.Errors thrown during the run are caught and 
+    stored in the result. 
+  ----------------------------------------------------------------------------*/
+   METHOD PROTECTED VOID RunTestMethod(INPUT testMethod AS MethodInfo, INPUT testFixture AS Fixture, INPUT paramList AS Progress.Lang.ParameterList):
 
     DEFINE VARIABLE methodResult AS TestMethodResult NO-UNDO.
     methodResult = NEW TestMethodResult(testMethod).
     currentResult:AddResult(methodResult).
     IF ShouldRun(testMethod) THEN DO ON ERROR UNDO, THROW:
       NotifyOfTestStart(testMethod).
+      IF testFixture NE ? AND VALID-OBJECT(testFixture) THEN testFixture:CreateData().
       ETIME(TRUE).
       RunBefores(currentInfo:GetAnnotatedMethods(OEUnitAnnotations:Before)).
       ETIME(TRUE).
