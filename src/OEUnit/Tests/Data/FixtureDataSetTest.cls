@@ -4,7 +4,7 @@ ROUTINE-LEVEL ON ERROR UNDO, THROW.
 USING Progress.Lang.*.
 USING OEUnit.Tests.Data.*.
 USING OEUnit.Assertion.Assert.
-USING OEUnit.Data.Fixture.
+USING OEUnit.Data.FixtureDataSet.
 
 CLASS OEUnit.Tests.Data.FixtureDataSetTest: 
     
@@ -13,16 +13,16 @@ CLASS OEUnit.Tests.Data.FixtureDataSetTest:
       FIELD Accepted   AS LOGICAL
       INDEX StatusCode IS PRIMARY UNIQUE StatusCode ASCENDING.
     
-    DEFINE VARIABLE fixture AS Fixture NO-UNDO.
+    DEFINE VARIABLE fixture AS FixtureDataSet NO-UNDO.
 
     @After.
-    METHOD PUBLIC VOID DeleteFixture():
+    METHOD PUBLIC VOID DeleteFixtureDataSet():
         DELETE OBJECT fixture NO-ERROR.
     END METHOD.
     
     @Test.
     METHOD PUBLIC VOID FromJSON():
-        fixture = NEW Fixture().
+        fixture = NEW FixtureDataSet().
         fixture:FromJSON("~{ ~"FirstTable~": ["
                          + "  ~{ ~"name~": ~"Char Value~", ~"intvalue~": 0, ~"bool~": true, ~"nullvalue~": null},"
                          + "  ~{ ~"name~": ~"Next Value~", ~"intvalue~": 15, ~"bool~": false, ~"nullvalue~": 0},"
@@ -36,7 +36,7 @@ CLASS OEUnit.Tests.Data.FixtureDataSetTest:
     
     @Test.
     METHOD PUBLIC VOID FromJSON_Reset():
-        fixture = NEW Fixture().
+        fixture = NEW FixtureDataSet().
         fixture:FromJSON("~{ ~"FirstTable~": ["
                          + "~{ ~"name~": ~"Char Value~", ~"intvalue~": 0, ~"bool~": true, ~"nullvalue~": null},"
                          + "~{ ~"name~": ~"Next Value~", ~"intvalue~": 15, ~"bool~": false, ~"nullvalue~": 0},"
@@ -55,7 +55,7 @@ CLASS OEUnit.Tests.Data.FixtureDataSetTest:
     
     @Test.
     METHOD PUBLIC VOID FromXML():
-        fixture = NEW Fixture().
+        fixture = NEW FixtureDataSet().
         fixture:FromXML('<?xml version="1.0"?>'
                         + '<ProDataSet>'
                         +   '<FirstTable>'
@@ -76,7 +76,7 @@ CLASS OEUnit.Tests.Data.FixtureDataSetTest:
     
     @Test.
     METHOD PUBLIC VOID FromXML_Reset():
-        fixture = NEW Fixture().
+        fixture = NEW FixtureDataSet().
         fixture:FromXML('<?xml version="1.0"?>'
                         + '<ProDataSet>'
                         +   '<FirstTable>'
@@ -116,7 +116,7 @@ CLASS OEUnit.Tests.Data.FixtureDataSetTest:
         DEFINE VARIABLE hdSource  AS HANDLE NO-UNDO.
         DEFINE VARIABLE httBuffer AS HANDLE NO-UNDO.
 
-        fixture = NEW Fixture().
+        fixture = NEW FixtureDataSet().
         EMPTY TEMP-TABLE ttTestTable.
         CREATE ttTestTable.
         ASSIGN ttTestTable.StatusCode = "NEW"
@@ -146,7 +146,7 @@ CLASS OEUnit.Tests.Data.FixtureDataSetTest:
     /*
     @Test.
     METHOD PUBLIC VOID FromTempTable_Reset():
-        fixture = NEW Fixture().
+        fixture = NEW FixtureDataSet().
         EMPTY TEMP-TABLE ttTestTable.
         CREATE ttTestTable.
         ASSIGN ttTestTable.StatusCode = "NEW"
@@ -183,7 +183,7 @@ CLASS OEUnit.Tests.Data.FixtureDataSetTest:
         DEFINE VARIABLE hdSource  AS HANDLE NO-UNDO.
         DEFINE VARIABLE httBuffer AS HANDLE NO-UNDO.
 
-        fixture = NEW Fixture().
+        fixture = NEW FixtureDataSet().
         EMPTY TEMP-TABLE ttTestTable.
         CREATE ttTestTable.
         ASSIGN ttTestTable.StatusCode = "NEW"
