@@ -39,7 +39,7 @@ CLASS OEUnit.Tests.Data.FixtureTest:
     END METHOD.
     
     @Test.
-    METHOD PUBLIC VOID FromJSON_Reset():
+    METHOD PUBLIC VOID FromJSON_Multiple():
         fixture = NEW Fixture().
         fixture:FromJSON("~{ ~"FirstTable~": ["
                          + "~{ ~"name~": ~"Char Value~", ~"intvalue~": 0, ~"bool~": true, ~"nullvalue~": null},"
@@ -82,7 +82,7 @@ CLASS OEUnit.Tests.Data.FixtureTest:
     END METHOD.
     
     @Test.
-    METHOD PUBLIC VOID FromXML_Reset():
+    METHOD PUBLIC VOID FromXML_Multiple():
         fixture = NEW Fixture().
         fixture:FromXML('<?xml version="1.0"?>'
                         + '<ProDataSet>'
