@@ -237,7 +237,7 @@ CLASS OEUnit.Runners.OEUnitRunner INHERITS BaseRunner:
     currentResult:AddResult(methodResult).
     IF ShouldRun(testMethod) THEN DO ON ERROR UNDO, THROW:
       NotifyOfTestStart(testMethod).
-      IF testFixture NE ? AND VALID-OBJECT(testFixture) THEN testFixture:CreateData().
+      IF testFixture NE ? AND VALID-OBJECT(testFixture) AND TRANSACTION THEN testFixture:CreateData().
       ETIME(TRUE).
       RunBefores(currentInfo:GetAnnotatedMethods(OEUnitAnnotations:Before)).
       ETIME(TRUE).
