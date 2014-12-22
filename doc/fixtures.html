@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <title>OEUnit - Fixtures</title>
+</head>
+<body>
+    <table class="menu" cellpadding="10" cellspacing="0">
+        <tr>
+            <td>
+                <h2>OEUnit - Unit Testing Framework</h2>
+                <ul class="menuItems">
+                    <li><a href="index.html">Overview</a></li>
+                    <li><a href="installation.html">Installation</a></li>
+                    <li><a href="testcase.html">Writing a Test Case</a></li>
+                    <li><a href="testsuite.html">Writing a Test Suite</a></li>
+                    <li><a href="runningtests.html">Running a Test</a></li>
+                    <li><a href="reportingtests.html">Reporting Test Results</a></li>
+                    <li><a href="dataprovider.html">DataProviders</a></li>
+                    <li>Fixtures</li>
+                    <li><a href="license.html">License</a></li>
+                    <li><a href="changelog.html">Change Log</a></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <h1>
+        Fixtures
+    </h1>
+    <h2>What are Fixtures?</h2>
+    <p>
+        A fixture is an object that inserts, or creates, data into one or more database tables before
+        a unit test is run. At the end of the test, the fixture data is removed.<br />
+        <br />
+        A test method declares that is requires a Fixture when it is defined, using the <code>fixture</code>
+        attribute, supplying the name of a fixture class method as the attribute value.<br />
+        <br />
+        A class method is defined in the test case, with the <code class="keyword">@Fixture</code> 
+        annotation, with an optional <code>name</code> attribute. This method returns an object of type 
+        <code>OEUnit.Data.Fixture</code> which will contain the data to be loaded into a database when required.
+    </p>
+    <h2>How to use a Fixture</h2>
+    <p>
+        1. Define a test method, using the <code>fixture</code> attribute to specify the name of a class method 
+        which will provide a fixture object.<br />
+        For example:</p>
+    <pre class="code"> <span class="keyword">ROUTINE-LEVEL ON ERROR UNDO, THROW.
+
+ USING</span> OEUnit.Assertion.Assert.
+ <span class="keyword">USING</span> OEUnit.Data.Fixture.
+
+ <span class="keyword">CLASS</span> SimpleTest:
+   
+   @Test (fixture=OrderStatusFixture). 
+   <span class="keyword">METHOD PUBLIC VOID</span> AcceptStatusChange(): 
+     <span class="keyword">DEFINE VARIABLE</span> result <span class="keyword">AS LOGICAL NO-UNDO.</span>
+     <span class="keyword">FIND FIRST</span> Order 
+          <span class="keyword">WHERE</span> Order.Status = "NEW" <span class="keyword">NO-LOCK NO-ERROR</span>.
+     Order:OpenOrder(Order.OrderNo).
+     result = Order:ChangeStatus(INPUT "ACCEPTED"). 
+     Assert:AreEqual(result,<span class="literal">TRUE</span>).
+   <span class="keyword">END METHOD</span>.    
+
+ <span class="keyword">END CLASS</span>.</pre>
+    <p>
+        <br />
+        2. Add a method to the class which returns an OEUnit.Data.Fixture object.<br />
+        Use the <code class="keyword">@Fixture</code> annotation to indicate that the class is a Fixture method.<br/>
+        For example:</p>
+   <pre class="code">   @Fixture. 
+   <span class="keyword">METHOD PUBLIC </span>Fixture OrderStatusFixture(): 
+     <span class="keyword">DEFINE VARIABLE</span> fixture <span class="keyword">AS</span> Fixture <span class="keyword">NO-UNDO</span>.
+     fixture = <span class="keyword">NEW</span> Fixture().
+     fixture:FromJSON(<span class="literal">"~{ ~"Order~": ["
+                      + "~{ ~"OrderNo~": ~"10000~", ~"CustomerNo~": 99000, ~"Status~": ~"COMPLETED~"},"
+                      + "~{ ~"OrderNo~": ~"10001~", ~"CustomerNo~": 99001, ~"Status~": ~"CANCELLED~"},"
+                      + "~{ ~"OrderNo~": ~"10002~", ~"CustomerNo~": 99002, ~"Status~": ~"COMPLETED~"},"
+                      + "~{ ~"OrderNo~": ~"10003~", ~"CustomerNo~": 99000, ~"Status~": ~"NEW~"},
+                      + "~{ ~"OrderNo~": ~"10004~", ~"CustomerNo~": 99003, ~"Status~": ~"ACCEPTED~"},"
+                      + "~{ ~"OrderNo~": ~"10005~", ~"CustomerNo~": 99004, ~"Status~": ~"PAID~"},"
+                      + "]}"</span>).
+     <span class="keyword">RETURN</span> fixture.
+   <span class="keyword">END METHOD</span>.</pre> <p class="important">
+        <b>
+            <br />
+            Important Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The name of the <code>Fixture</code> class method must match the value of the <code>fixture</code> 
+            attribute on the test method, <i>or</i> the <code class="keyword">@Fixture</code> annotation must
+            have a <code>name</code> attribute which matches the value of the <code>fixture</code> 
+            attribute on the test method.</li>
+        <li>Execution of a Fixture method will stop when an assertion fails or a <code>Progress.Lang.Error</code>
+            is thrown.</li>
+        <li>There are no special naming requirements for Fixture methods.</li>
+        <li>Fixture methods must be <code class="keyword">PUBLIC</code></li>
+        <li>Fixture methods must accept no parameters.</li>
+        <li>Fixture methods can be <code class="keyword">STATIC</code>.</li>
+        <li>Fixture methods can be used by more than one test method.</li>
+        <li>A transaction is created before the records provided in the fixture are loaded, and is rolled-back 
+            after the test method returns.</li>
+    </ul>
+    <p>
+        <br />
+        3. Run the test case as per normal.</p>
+    <p>
+    <a name="methods"></a>
+    <h2>Name Attribute</h2>
+    <p>
+        Each method annotated with <code>@Fixture</code> can specify a name attribute which is used
+        when searching for a Fixture method, instead of the method name.
+    </p>
+    <p>
+        <b>Syntax:</b></p>
+    <p class="syntax">
+        <pre>   @Fixture[(name="<i>FixtureName</i>")].</pre></p>
+    <p class="syntax">
+        <i><b>FixtureName</b></i><br />
+        &nbsp;&nbsp;&nbsp; The Name of the Fixture. This name can then be specified by
+        a test method as its Fixture, in the <code>fixture</code> attribute<br />
+    </p>
+    <p>
+        <b>
+            <br />
+            Example:</b>
+    </p>
+    <pre class="code">   @Test (dataProvider=OrderStatusFixture). 
+   <span class="keyword">METHOD PUBLIC VOID</span> AcceptStatusChange(): 
+     <span class="keyword">DEFINE VARIABLE</span> result <span class="keyword">AS LOGICAL NO-UNDO.</span>
+     <span class="keyword">FIND FIRST</span> Order 
+          <span class="keyword">WHERE</span> Order.Status = "NEW" <span class="keyword">NO-LOCK NO-ERROR</span>.
+     Order:OpenOrder(Order.OrderNo).
+     result = Order:ChangeStatus(INPUT "ACCEPTED"). 
+     Assert:AreEqual(result,<span class="literal">TRUE</span>).
+   <span class="keyword">END METHOD</span>. 
+   
+   @Fixture (name=OrderStatusFixture). 
+   <span class="keyword">METHOD PUBLIC </span>Fixture myFixture(): 
+     <span class="keyword">DEFINE VARIABLE</span> fixture <span class="keyword">AS</span> Fixture <span class="keyword">NO-UNDO</span>.
+     fixture = <span class="keyword">NEW</span> Fixture().
+     fixture:FromJSON(<span class="literal">"~{ ~"Order~": ["
+                      + "~{ ~"OrderNo~": ~"10000~", ~"CustomerNo~": 99000, ~"Status~": ~"COMPLETED~"},"
+                      + "~{ ~"OrderNo~": ~"10001~", ~"CustomerNo~": 99001, ~"Status~": ~"CANCELLED~"},"
+                      + "~{ ~"OrderNo~": ~"10002~", ~"CustomerNo~": 99002, ~"Status~": ~"COMPLETED~"},"
+                      + "~{ ~"OrderNo~": ~"10003~", ~"CustomerNo~": 99000, ~"Status~": ~"NEW~"},"
+                      + "~{ ~"OrderNo~": ~"10004~", ~"CustomerNo~": 99003, ~"Status~": ~"ACCEPTED~"},"
+                      + "~{ ~"OrderNo~": ~"10005~", ~"CustomerNo~": 99004, ~"Status~": ~"PAID~"},"
+                      + "]}"</span>).
+     <span class="keyword">RETURN</span> fixture.
+   <span class="keyword">END METHOD</span>.</pre>
+   <h2>Fixture Methods</h2>
+   <p>The Fixture class provides a range of methods for loading data into the Fixture.</p>
+   <p>Each successive call to one of these methods defines a range of data to be loaded. When
+      the records are loaded, they are done so in the order that they are specified to the Fixture
+      object.</p>
+   <p><b>METHOD PUBLIC LOGICAL FromJSON(INPUT json AS LONGCHAR)</b></p>
+   <p>This method is used to load data from JSON text stored in a <span class="keyword">LONGCHAR</span>.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The structure of the JSON data should match that which is accepted by an OpenEdge <span class="keyword">DATASET</span>
+            when using the <span class="keyword">READ-JSON</span> method.</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+        <li>Only data in the top-level objects in the JSON data will be loaded. Child objects are ignored.</li>
+    </ul>
+   <p><b>METHOD PUBLIC LOGICAL FromJSONFile(INPUT path AS CHARACTER):</b></p>
+   <p>This method is used to load data from JSON text stored in a file. The file path should be provided as the 
+      <span class="keyword">INPUT</span> parameter.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The structure of the JSON data in the file should match that which is accepted by an OpenEdge 
+            <span class="keyword">DATASET</span> when using the <span class="keyword">READ-JSON</span> method.</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+        <li>Only data in the top-level objects in the JSON data will be loaded. Child objects are ignored.</li>
+    </ul>
+   <p><b>METHOD PUBLIC LOGICAL FromXML(INPUT xml AS LONGCHAR)</b></p>
+   <p>This method is used to load data from XML data stored in a <span class="keyword">LONGCHAR</span>.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The structure of the XML data should match that which is accepted by an OpenEdge <span class="keyword">DATASET</span>
+            when using the <span class="keyword">READ-XML</span> method.</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+        <li>It is advised to specify the XML Schema in the XML data in order for data types to be correctly interpreted.</li>
+        <li>Only data in the top-level objects in the XML data will be loaded. Child objects are ignored.</li>
+    </ul>
+   <p><b>METHOD PUBLIC LOGICAL FromXMLFile(INPUT path AS CHARACTER):</b></p>
+   <p>This method is used to load data from XML data stored in a file. The file path should be provided as the 
+      <span class="keyword">INPUT</span> parameter.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The structure of the XML data in the file should match that which is accepted by an OpenEdge 
+            <span class="keyword">DATASET</span> when using the <span class="keyword">READ-XML</span> method.</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+        <li>It is advised to specify the XML Schema in the XML data in order for data types to be correctly interpreted.</li>
+        <li>Only data in the top-level objects in the XML data will be loaded. Child objects are ignored.</li>
+    </ul>
+   <p><b>METHOD PUBLIC LOGICAL FromTempTable(INPUT ttSrc AS HANDLE):</b></p>
+   <p>This method is used to load data from an existing temp-table, via the provided <span class="keyword">HANDLE INPUT</span> parameter.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The entire data and metaschema of the temp-table are copied.</li>
+        <li>Data is copied in EMPTY mode</li>
+        <li>The data and metaschema of the provided source temp-table are not affected.</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+    </ul>
+    <p><b>METHOD PUBLIC LOGICAL FromDataSet(INPUT dsSrc AS HANDLE):</b></p>
+   <p>This method is used to load data from an existing DataSet, via the provided <span class="keyword">HANDLE INPUT</span> parameter.</p>
+   <p class="important">
+        <b>
+            <br />
+            Notes:</b></p>
+    <ul style="margin-top: auto;">
+        <li>The entire data and metaschema of the temp-table are copied.</li>
+        <li>Data is copied in EMPTY mode</li>
+        <li>The method will return <span class="keyword">TRUE</span> if the data was successfully loaded.</li>
+    </ul>
+    <div class="footer">
+        Cameron Wills, 2011.</div>
+</body>
+</html>
