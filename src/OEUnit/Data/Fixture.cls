@@ -6,38 +6,71 @@
 ------------------------------------------------------------------------------*/
 USING Progress.Lang.*.
 USING OEUnit.Data.*.
+USING OEUnit.Util.*.
 
 ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 CLASS OEUnit.Data.Fixture: 
 	
   DEFINE PROTECTED VARIABLE dsData AS HANDLE NO-UNDO.
+  DEFINE PROTECTED VARIABLE Fixtures AS List NO-UNDO. 
   
   /*----------------------------------------------------------------------------
     Read-only Property that returns the number of top level buffers in dataset
   ----------------------------------------------------------------------------*/
   DEFINE PUBLIC PROPERTY TableCount AS INTEGER NO-UNDO
     GET ():
+      DEFINE VARIABLE tCount AS INTEGER NO-UNDO INITIAL 0.
+      DEFINE VARIABLE res AS LOGICAL NO-UNDO.
+      DEFINE VARIABLE fix AS FixtureDataSet NO-UNDO.
+      IF VALID-OBJECT(Fixtures) THEN
+      DO:
+          res = Fixtures:MoveFirst().
+          DO WHILE res = TRUE
+            ON ERROR UNDO, THROW:
+            fix = CAST(Fixtures:CURRENT, "OEUnit.Data.FixtureDataSet").
+            tCount = tCount + fix:TableCount.
+            res = Fixtures:MoveNext().
+          END.
+          RETURN tCount.
+      END.
       IF VALID-HANDLE(dsData) THEN RETURN dsData:NUM-TOP-BUFFERS.
       ELSE RETURN 0.
     END GET.
 
+  /*----------------------------------------------------------------------------
+    The number of elements in the list  
+  ----------------------------------------------------------------------------*/  
+  DEFINE PUBLIC PROPERTY Size AS INTEGER NO-UNDO INIT 0
+    GET ():
+      IF VALID-OBJECT(Fixtures) THEN RETURN Fixtures:Size.
+      ELSE RETURN 0.
+    END GET.
+    PRIVATE SET.
+
   CONSTRUCTOR PUBLIC Fixture():
 	SUPER ().
+	Fixtures = NEW List(TRUE). /* TRUE => destory list objects on destruction */
   END CONSTRUCTOR.
 
   DESTRUCTOR PUBLIC Fixture():
     IF VALID-HANDLE(dsData) THEN DELETE OBJECT dsData.
+    IF VALID-OBJECT(Fixtures) THEN DELETE OBJECT Fixtures.
   END DESTRUCTOR.
 
   /*----------------------------------------------------------------------------
     Import fixture data from dataset encoded in JSON via parameter
   ----------------------------------------------------------------------------*/
   METHOD PUBLIC LOGICAL FromJSON(INPUT json AS LONGCHAR):
+    DEFINE VARIABLE fix AS FixtureDataSet NO-UNDO.
     DEFINE VARIABLE res AS LOGICAL NO-UNDO.
-    IF VALID-HANDLE(dsData) THEN DELETE OBJECT dsData.
-    CREATE DATASET dsData.
-    res = dsData:READ-JSON("LONGCHAR", json, "EMPTY").
+    fix = NEW FixtureDataSet().
+    res = fix:FromJSON(INPUT json).
+    IF res = TRUE THEN
+      Fixtures:Add(fix).
+    ELSE
+      IF VALID-OBJECT(fix) THEN
+        DELETE OBJECT fix.
     RETURN res.
   END METHOD.
 
@@ -45,10 +78,15 @@ CLASS OEUnit.Data.Fixture:
     Import fixture data from data encoded in JSON in given file
   ----------------------------------------------------------------------------*/
   METHOD PUBLIC LOGICAL FromJSONFile(INPUT path AS CHARACTER):
+    DEFINE VARIABLE fix AS FixtureDataSet NO-UNDO.
     DEFINE VARIABLE res AS LOGICAL NO-UNDO.
-    IF VALID-HANDLE(dsData) THEN DELETE OBJECT dsData.
-    CREATE DATASET dsData.
-    res = dsData:READ-JSON("FILE", path, "EMPTY").
+    fix = NEW FixtureDataSet().
+    res = fix:FromJSONFile(INPUT path).
+    IF res = TRUE THEN
+      Fixtures:Add(fix).
+    ELSE
+      IF VALID-OBJECT(fix) THEN
+        DELETE OBJECT fix.
     RETURN res.
   END METHOD.
 
@@ -56,10 +94,15 @@ CLASS OEUnit.Data.Fixture:
     Import fixture data from dataset encoded in XML via parameter
   ----------------------------------------------------------------------------*/
   METHOD PUBLIC LOGICAL FromXML(INPUT xml AS LONGCHAR):
+    DEFINE VARIABLE fix AS FixtureDataSet NO-UNDO.
     DEFINE VARIABLE res AS LOGICAL NO-UNDO.
-    IF VALID-HANDLE(dsData) THEN DELETE OBJECT dsData.
-    CREATE DATASET dsData.
-    res = dsData:READ-XML("LONGCHAR", xml, "EMPTY", ?, ?).
+    fix = NEW FixtureDataSet().
+    res = fix:FromXML(INPUT xml).
+    IF res = TRUE THEN
+      Fixtures:Add(fix).
+    ELSE
+      IF VALID-OBJECT(fix) THEN
+        DELETE OBJECT fix.
     RETURN res.
   END METHOD.
 
@@ -67,10 +110,15 @@ CLASS OEUnit.Data.Fixture:
     Import fixture data from data encoded in XML in given file
   ----------------------------------------------------------------------------*/
   METHOD PUBLIC LOGICAL FromXMLFile(INPUT path AS CHARACTER):
+    DEFINE VARIABLE fix AS FixtureDataSet NO-UNDO.
     DEFINE VARIABLE res AS LOGICAL NO-UNDO.
-    IF VALID-HANDLE(dsData) THEN DELETE OBJECT dsData.
-    CREATE DATASET dsData.
-    res = dsData:READ-XML("FILE", path, "EMPTY", ?, ?).
+    fix = NEW FixtureDataSet().
+    res = fix:FromXMLFile(INPUT path).
+    IF res = TRUE THEN
+      Fixtures:Add(fix).
+    ELSE
+      IF VALID-OBJECT(fix) THEN
+        DELETE OBJECT fix.
     RETURN res.
   END METHOD.
   
@@ -78,10 +126,15 @@ CLASS OEUnit.Data.Fixture:
     Import fixture data by copying from an existing dataset
   ----------------------------------------------------------------------------*/
   METHOD PUBLIC LOGICAL FromDataSet(INPUT dsSrc AS HANDLE):
+    DEFINE VARIABLE fix AS FixtureDataSet NO-UNDO.
     DEFINE VARIABLE res AS LOGICAL NO-UNDO.
-    IF VALID-HANDLE(dsData) THEN DELETE OBJECT dsData.
-    CREATE DATASET dsData.
-    res = dsData:COPY-DATASET(dsSrc).
+    fix = NEW FixtureDataSet().
+    res = fix:FromDataSet(INPUT dsSrc).
+    IF res = TRUE THEN
+      Fixtures:Add(fix).
+    ELSE
+      IF VALID-OBJECT(fix) THEN
+        DELETE OBJECT fix.
     RETURN res.
   END METHOD.
   
@@ -89,42 +142,15 @@ CLASS OEUnit.Data.Fixture:
     Import fixture data by copying from a temp-table
   ----------------------------------------------------------------------------*/
   METHOD PUBLIC LOGICAL FromTempTable(INPUT ttSrc AS HANDLE):
-    DEFINE VARIABLE res       AS LOGICAL NO-UNDO.
-    DEFINE VARIABLE ttSrcCpy  AS HANDLE NO-UNDO.
-    DEFINE VARIABLE ttData    AS HANDLE NO-UNDO.
-    DEFINE VARIABLE ttDataBuf AS HANDLE NO-UNDO.
-    DEFINE VARIABLE hSource   AS HANDLE NO-UNDO.
-    IF VALID-HANDLE(dsData) THEN DELETE OBJECT dsData.
-    CREATE DATASET dsData.
-    IF NOT VALID-HANDLE(dsData) THEN RETURN FALSE.
-    CREATE TEMP-TABLE ttData.
-    res = ttData:COPY-TEMP-TABLE(ttSrc,FALSE,FALSE,FALSE,"").
-    IF res = FALSE THEN
-    DO:
-      IF VALID-HANDLE(dsData) THEN DELETE OBJECT dsData.
-      IF VALID-HANDLE(ttData) THEN DELETE OBJECT ttData.
-      RETURN res.
-    END.
-    CREATE TEMP-TABLE ttSrcCpy.
-    res = ttSrcCpy:COPY-TEMP-TABLE(ttSrc,FALSE,FALSE,FALSE,"").
-    IF res = FALSE THEN
-    DO:
-      IF VALID-HANDLE(dsData)   THEN DELETE OBJECT dsData.
-      IF VALID-HANDLE(ttData)   THEN DELETE OBJECT ttData.
-      IF VALID-HANDLE(ttSrcCpy) THEN DELETE OBJECT ttSrcCpy.
-      RETURN res.
-    END.
-    ttDataBuf = ttData:DEFAULT-BUFFER-HANDLE.
-    dsData:ADD-BUFFER(ttDataBuf).
-    CREATE DATA-SOURCE hSource.
-    IF NOT VALID-HANDLE(hSource) THEN
-    DO:
-      IF VALID-HANDLE(dsData) THEN DELETE OBJECT dsData.
-      DELETE OBJECT hSource.
-    END.
-    hSource:ADD-SOURCE-BUFFER(ttSrcCpy:DEFAULT-BUFFER-HANDLE,?).
-    ttDataBuf:ATTACH-DATA-SOURCE(hSource).
-    dsData:FILL().
+    DEFINE VARIABLE fix AS FixtureDataSet NO-UNDO.
+    DEFINE VARIABLE res AS LOGICAL NO-UNDO.
+    fix = NEW FixtureDataSet().
+    res = fix:FromTempTable(INPUT ttSrc).
+    IF res = TRUE THEN
+      Fixtures:Add(fix).
+    ELSE
+      IF VALID-OBJECT(fix) THEN
+        DELETE OBJECT fix.
     RETURN res.
   END METHOD.
   
@@ -132,41 +158,16 @@ CLASS OEUnit.Data.Fixture:
     Create data in the attached databases, based on data in dataset tables.
   ----------------------------------------------------------------------------*/
   METHOD PUBLIC LOGICAL CreateData():
-    DEFINE VARIABLE hBuffer  AS HANDLE  NO-UNDO.
-    DEFINE VARIABLE hQuery   AS HANDLE  NO-UNDO.
-    DEFINE VARIABLE hQBuffer AS HANDLE  NO-UNDO.
-    DEFINE VARIABLE hRBuffer AS HANDLE  NO-UNDO.
-    DEFINE VARIABLE iCount   AS INTEGER NO-UNDO.
-    
-    /* Ensure that any errors are thrown properly */
-    DO ON ERROR UNDO, THROW:
-      IF NOT VALID-HANDLE(dsData) THEN RETURN FALSE.
-      DO iCount = 1 TO dsData:NUM-TOP-BUFFERS
-        ON ERROR UNDO, THROW:
-        hBuffer = dsData:GET-TOP-BUFFER(iCount).
-        IF NOT VALID-HANDLE(hBuffer) THEN RETURN ERROR NEW FixtureError("Failed to fetch buffer from DataSet").
-        IF VALID-HANDLE(hQuery) THEN DELETE OBJECT hQuery.
-        IF VALID-HANDLE(hQBuffer) THEN DELETE OBJECT hQBuffer.
-        CREATE BUFFER hQBuffer FOR TABLE hBuffer.
-        CREATE BUFFER hRBuffer FOR TABLE hBuffer:NAME NO-ERROR.
-        IF ERROR-STATUS:ERROR THEN RETURN ERROR NEW FixtureError(SUBSTITUTE("Could not create buffer for destination table &1.", hBuffer:NAME)).
-        CREATE QUERY hQuery.
-        hQuery:SET-BUFFERS(hQBuffer). /* NOTE: Because this is taken from Dataset, names of tables can overlap and doesn't cause a problem */
-        IF(hQuery:QUERY-PREPARE("FOR EACH " + hBuffer:NAME + " NO-LOCK:") = FALSE) THEN
-          RETURN ERROR NEW FixtureError(SUBSTITUTE("Could not query data in source &1.", hBuffer:NAME)).
-        hQuery:QUERY-OPEN().
-        hQuery:GET-FIRST(NO-LOCK).
-        DO WHILE NOT hQuery:QUERY-OFF-END
-          ON ERROR UNDO, THROW:
-            hRBuffer:BUFFER-CREATE().
-            hRBuffer:BUFFER-COPY(hQBuffer).
-            hRBuffer:BUFFER-RELEASE().
-            hQuery:GET-NEXT().
-        END.
-        IF VALID-HANDLE(hRBuffer) THEN DELETE OBJECT hRBuffer.
-        IF VALID-HANDLE(hQBuffer) THEN DELETE OBJECT hQBuffer.
-        IF VALID-HANDLE(hQuery)   THEN DELETE OBJECT hQuery.
-      END.
+    DEFINE VARIABLE fix AS FixtureDataSet NO-UNDO.
+    DEFINE VARIABLE res AS LOGICAL NO-UNDO.
+    IF NOT VALID-OBJECT(Fixtures) THEN RETURN FALSE.
+    res = fixtures:MoveFirst().
+    DO WHILE res = TRUE
+      ON ERROR UNDO, THROW:
+      fix = CAST(fixtures:CURRENT, "OEUnit.Data.FixtureDataSet").
+      IF VALID-OBJECT(fix) THEN
+        fix:CreateData().
+      res = fixtures:MoveNext().
     END.
   END METHOD.
 

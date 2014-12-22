@@ -13,6 +13,9 @@ CLASS OEUnit.Tests.Data.FixtureTest:
       FIELD Accepted   AS LOGICAL
       INDEX StatusCode IS PRIMARY UNIQUE StatusCode ASCENDING.
     
+    DEFINE PROTECTED TEMP-TABLE ttSecondTestTable NO-UNDO
+      LIKE ttTestTable.
+    
     DEFINE VARIABLE fixture AS Fixture NO-UNDO.
 
     @After.
@@ -32,6 +35,7 @@ CLASS OEUnit.Tests.Data.FixtureTest:
                          + "  ~{ ~"name~": ~"Next Value~", ~"intvalue~": 15, ~"bool~": false, ~"nullvalue~": 0}"
                          + "]}").
         Assert:AreEqual(fixture:TableCount, 2).
+        Assert:AreEqual(fixture:Size, 1).
     END METHOD.
     
     @Test.
@@ -42,6 +46,7 @@ CLASS OEUnit.Tests.Data.FixtureTest:
                          + "~{ ~"name~": ~"Next Value~", ~"intvalue~": 15, ~"bool~": false, ~"nullvalue~": 0},"
                          + "]}").
         Assert:AreEqual(fixture:TableCount, 1).
+        Assert:AreEqual(fixture:Size, 1).
         fixture:FromJSON("~{ ~"FirstTable~": ["
                          + "  ~{ ~"name~": ~"Char Value~", ~"intvalue~": 0, ~"bool~": true, ~"nullvalue~": null},"
                          + "  ~{ ~"name~": ~"Next Value~", ~"intvalue~": 15, ~"bool~": false, ~"nullvalue~": 0},"
@@ -50,7 +55,8 @@ CLASS OEUnit.Tests.Data.FixtureTest:
                          + "  ~{ ~"name~": ~"Char Value~", ~"intvalue~": 0, ~"bool~": true, ~"nullvalue~": null},"
                          + "  ~{ ~"name~": ~"Next Value~", ~"intvalue~": 15, ~"bool~": false, ~"nullvalue~": 0}"
                          + "]}").
-        Assert:AreEqual(fixture:TableCount, 2).
+        Assert:AreEqual(fixture:TableCount, 3).
+        Assert:AreEqual(fixture:Size, 2).
     END METHOD.
     
     @Test.
@@ -72,6 +78,7 @@ CLASS OEUnit.Tests.Data.FixtureTest:
                         +   '</SecondTable>'
                         + '</ProDataSet>').
         Assert:AreEqual(fixture:TableCount, 2).
+        Assert:AreEqual(fixture:Size, 1).
     END METHOD.
     
     @Test.
@@ -89,6 +96,7 @@ CLASS OEUnit.Tests.Data.FixtureTest:
                         +   '</FirstTable>'
                         + '</ProDataSet>').
         Assert:AreEqual(fixture:TableCount, 1).
+        Assert:AreEqual(fixture:Size, 1).
         fixture:FromXML('<?xml version="1.0"?>'
                         + '<ProDataSet>'
                         +   '<FirstTable>'
@@ -104,7 +112,8 @@ CLASS OEUnit.Tests.Data.FixtureTest:
                         +     '<accepted>true</accepted>'
                         +   '</SecondTable>'
                         + '</ProDataSet>').
-        Assert:AreEqual(fixture:TableCount, 2).
+        Assert:AreEqual(fixture:TableCount, 3).
+        Assert:AreEqual(fixture:Size, 2).
     END METHOD.
     
     @Test.
@@ -141,6 +150,7 @@ CLASS OEUnit.Tests.Data.FixtureTest:
         hdSet:FILL().
         fixture:FromDataSet(hdSet).
         Assert:AreEqual(fixture:TableCount, 1).
+        Assert:AreEqual(fixture:Size, 1).
         
     END METHOD.
     /*
@@ -194,5 +204,37 @@ CLASS OEUnit.Tests.Data.FixtureTest:
                
         fixture:FromTempTable(TEMP-TABLE ttTestTable:HANDLE).
         Assert:AreEqual(fixture:TableCount,1).
+        Assert:AreEqual(fixture:Size, 1).
     END.
+
+    @Test.
+    METHOD PUBLIC VOID FromTempTable_Multiple():
+        fixture = NEW Fixture().
+        EMPTY TEMP-TABLE ttTestTable.
+        CREATE ttTestTable.
+        ASSIGN ttTestTable.StatusCode = "NEW"
+               ttTestTable.Accepted = TRUE. 
+        CREATE ttTestTable.
+        ASSIGN ttTestTable.StatusCode = "ACCEPTED"
+               ttTestTable.Accepted = TRUE.
+        CREATE ttTestTable.
+        ASSIGN ttTestTable.StatusCode = "PICKING"
+               ttTestTable.Accepted = FALSE. 
+        CREATE ttTestTable.
+        ASSIGN ttTestTable.StatusCode = "POSTED"
+               ttTestTable.Accepted = FALSE.
+        fixture:FromTempTable(TEMP-TABLE ttTestTable:HANDLE).
+        Assert:AreEqual(fixture:TableCount, 1).
+        Assert:AreEqual(fixture:Size, 1).
+        EMPTY TEMP-TABLE ttSecondTestTable.
+        CREATE ttSecondTestTable.
+        ASSIGN ttSecondTestTable.StatusCode = "NEW"
+               ttSecondTestTable.Accepted = TRUE. 
+        CREATE ttSecondTestTable.
+        ASSIGN ttSecondTestTable.StatusCode = "ACCEPTED"
+               ttSecondTestTable.Accepted = TRUE.
+        fixture:FromTempTable(TEMP-TABLE ttSecondTestTable:HANDLE).
+        Assert:AreEqual(fixture:TableCount, 2).
+        Assert:AreEqual(fixture:Size, 2).
+    END METHOD.
 END CLASS.
