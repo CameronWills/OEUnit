@@ -116,46 +116,36 @@ CLASS OEUnit.Tests.Data.FixtureTest:
         Assert:AreEqual(fixture:Size, 2).
     END METHOD.
     
-    @Test.
-    METHOD PUBLIC VOID FromDataSet():
+    METHOD PROTECTED HANDLE CreateDataSetFromTempTable(INPUT httTest AS HANDLE):
         
-        DEFINE VARIABLE httTest   AS HANDLE NO-UNDO.
         DEFINE VARIABLE hdSet     AS HANDLE NO-UNDO.
         DEFINE VARIABLE htt       AS HANDLE NO-UNDO.
         DEFINE VARIABLE hdSource  AS HANDLE NO-UNDO.
         DEFINE VARIABLE httBuffer AS HANDLE NO-UNDO.
-
-        fixture = NEW Fixture().
-        EMPTY TEMP-TABLE ttTestTable.
-        CREATE ttTestTable.
-        ASSIGN ttTestTable.StatusCode = "NEW"
-               ttTestTable.Accepted = TRUE. 
-        CREATE ttTestTable.
-        ASSIGN ttTestTable.StatusCode = "ACCEPTED"
-               ttTestTable.Accepted = TRUE.
-               
-        ASSIGN httTest = TEMP-TABLE ttTestTable:HANDLE.
-               
+        DEFINE VARIABLE httTestBuf AS HANDLE NO-UNDO.
+        
         CREATE TEMP-TABLE htt.
         htt:COPY-TEMP-TABLE(httTest, FALSE, TRUE).
-        
-        httBuffer = htt:DEFAULT-BUFFER-HANDLE.
+
+        /* Create buffers for temp-tables */        
+        CREATE BUFFER httBuffer FOR TABLE htt.
+        CREATE BUFFER httTestBuf FOR TABLE httTest.
         
         CREATE DATASET hdSet.
         hdSet:ADD-BUFFER(httBuffer).
         
         CREATE DATA-SOURCE hdSource.
-        hdSource:ADD-SOURCE-BUFFER(httTest:DEFAULT-BUFFER-HANDLE,?).
+        hdSource:ADD-SOURCE-BUFFER(httTestBuf,?).
         httBuffer:ATTACH-DATA-SOURCE(hdSource).
         hdSet:FILL().
-        fixture:FromDataSet(hdSet).
-        Assert:AreEqual(fixture:TableCount, 1).
-        Assert:AreEqual(fixture:Size, 1).
+        
+        RETURN hdSet.
         
     END METHOD.
-    /*
+    
     @Test.
-    METHOD PUBLIC VOID FromTempTable_Reset():
+    METHOD PUBLIC VOID FromDataSet():
+        
         fixture = NEW Fixture().
         EMPTY TEMP-TABLE ttTestTable.
         CREATE ttTestTable.
@@ -164,14 +154,20 @@ CLASS OEUnit.Tests.Data.FixtureTest:
         CREATE ttTestTable.
         ASSIGN ttTestTable.StatusCode = "ACCEPTED"
                ttTestTable.Accepted = TRUE.
-        CREATE ttTestTable.
-        ASSIGN ttTestTable.StatusCode = "PICKING"
-               ttTestTable.Accepted = FALSE. 
-        CREATE ttTestTable.
-        ASSIGN ttTestTable.StatusCode = "POSTED"
-               ttTestTable.Accepted = FALSE.
-        fixture:FromTempTable(TEMP-TABLE ttTestTable:HANDLE).
-        /*Assert:AreEqual(fixture:Size, 4).*/
+               
+        fixture:FromDataSet(CreateDataSetFromTempTable(INPUT TEMP-TABLE ttTestTable:HANDLE)).
+        Assert:AreEqual(fixture:TableCount, 1).
+        Assert:AreEqual(fixture:Size, 1).
+        
+    END METHOD.
+
+    @Test.
+    METHOD PUBLIC VOID FromDataSet_Multiple():
+        
+        DEFINE BUFFER ttBufTestTable FOR ttTestTable.
+        DEFINE BUFFER ttSecondTestTable FOR ttSecondTestTable.
+        
+        fixture = NEW Fixture().
         EMPTY TEMP-TABLE ttTestTable.
         CREATE ttTestTable.
         ASSIGN ttTestTable.StatusCode = "NEW"
@@ -179,10 +175,24 @@ CLASS OEUnit.Tests.Data.FixtureTest:
         CREATE ttTestTable.
         ASSIGN ttTestTable.StatusCode = "ACCEPTED"
                ttTestTable.Accepted = TRUE.
-        fixture:FromTempTable(TEMP-TABLE ttTestTable:HANDLE).
-        /*Assert:AreEqual(fixture:Size, 2).*/
+               
+        fixture:FromDataSet(CreateDataSetFromTempTable(INPUT TEMP-TABLE ttBufTestTable:HANDLE)).
+        Assert:AreEqual(fixture:TableCount, 1).
+        Assert:AreEqual(fixture:Size, 1).
+
+        EMPTY TEMP-TABLE ttSecondTestTable.
+        CREATE ttSecondTestTable.
+        ASSIGN ttSecondTestTable.StatusCode = "NEW"
+               ttSecondTestTable.Accepted = TRUE. 
+        CREATE ttSecondTestTable.
+        ASSIGN ttSecondTestTable.StatusCode = "ACCEPTED"
+               ttSecondTestTable.Accepted = TRUE.
+               
+        fixture:FromDataSet(CreateDataSetFromTempTable(INPUT TEMP-TABLE ttSecondTestTable:HANDLE)).
+        Assert:AreEqual(fixture:TableCount, 2).
+        Assert:AreEqual(fixture:Size, 2).
+
     END METHOD.
-    */
     
     @Test.
     METHOD PUBLIC VOID FromTempTable():
