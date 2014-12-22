@@ -12,7 +12,6 @@ ROUTINE-LEVEL ON ERROR UNDO, THROW.
 
 CLASS OEUnit.Data.Fixture: 
 	
-  DEFINE PROTECTED VARIABLE dsData AS HANDLE NO-UNDO.
   DEFINE PROTECTED VARIABLE Fixtures AS List NO-UNDO. 
   
   /*----------------------------------------------------------------------------
@@ -34,8 +33,7 @@ CLASS OEUnit.Data.Fixture:
           END.
           RETURN tCount.
       END.
-      IF VALID-HANDLE(dsData) THEN RETURN dsData:NUM-TOP-BUFFERS.
-      ELSE RETURN 0.
+      RETURN 0.
     END GET.
 
   /*----------------------------------------------------------------------------
@@ -54,7 +52,6 @@ CLASS OEUnit.Data.Fixture:
   END CONSTRUCTOR.
 
   DESTRUCTOR PUBLIC Fixture():
-    IF VALID-HANDLE(dsData) THEN DELETE OBJECT dsData.
     IF VALID-OBJECT(Fixtures) THEN DELETE OBJECT Fixtures.
   END DESTRUCTOR.
 
