@@ -90,14 +90,15 @@ CLASS OEUnit.Data.FixtureDataSet:
   ----------------------------------------------------------------------------*/
   METHOD PUBLIC LOGICAL FromTempTable(INPUT ttSrc AS HANDLE):
     DEFINE VARIABLE res       AS LOGICAL NO-UNDO.
-    DEFINE VARIABLE ttSrcCpy  AS HANDLE NO-UNDO.
     DEFINE VARIABLE ttData    AS HANDLE NO-UNDO.
     DEFINE VARIABLE ttDataBuf AS HANDLE NO-UNDO.
-    DEFINE VARIABLE hSource   AS HANDLE NO-UNDO.
     IF VALID-HANDLE(dsData) THEN DELETE OBJECT dsData.
     CREATE DATASET dsData.
     IF NOT VALID-HANDLE(dsData) THEN RETURN FALSE.
     CREATE TEMP-TABLE ttData.
+    /* COPY-TEMP-TABLE will also copy data as well, and hence there
+     * is no need to configure data sources and call DataSet:Fill()
+     */
     res = ttData:COPY-TEMP-TABLE(ttSrc,FALSE,FALSE,FALSE,"").
     IF res = FALSE THEN
     DO:
@@ -105,27 +106,9 @@ CLASS OEUnit.Data.FixtureDataSet:
       IF VALID-HANDLE(ttData) THEN DELETE OBJECT ttData.
       RETURN res.
     END.
-    CREATE TEMP-TABLE ttSrcCpy.
-    res = ttSrcCpy:COPY-TEMP-TABLE(ttSrc,FALSE,FALSE,FALSE,"").
-    IF res = FALSE THEN
-    DO:
-      IF VALID-HANDLE(dsData)   THEN DELETE OBJECT dsData.
-      IF VALID-HANDLE(ttData)   THEN DELETE OBJECT ttData.
-      IF VALID-HANDLE(ttSrcCpy) THEN DELETE OBJECT ttSrcCpy.
-      RETURN res.
-    END.
     ttDataBuf = ttData:DEFAULT-BUFFER-HANDLE.
     dsData:ADD-BUFFER(ttDataBuf).
-    CREATE DATA-SOURCE hSource.
-    IF NOT VALID-HANDLE(hSource) THEN
-    DO:
-      IF VALID-HANDLE(dsData) THEN DELETE OBJECT dsData.
-      DELETE OBJECT hSource.
-    END.
-    hSource:ADD-SOURCE-BUFFER(ttSrcCpy:DEFAULT-BUFFER-HANDLE,?).
-    ttDataBuf:ATTACH-DATA-SOURCE(hSource).
-    dsData:FILL().
-    RETURN res.
+    RETURN TRUE.
   END METHOD.
   
   /*----------------------------------------------------------------------------
@@ -163,6 +146,7 @@ CLASS OEUnit.Data.FixtureDataSet:
             hRBuffer:BUFFER-RELEASE().
             hQuery:GET-NEXT().
         END.
+        hQuery:QUERY-CLOSE().
         IF VALID-HANDLE(hRBuffer) THEN DELETE OBJECT hRBuffer.
         IF VALID-HANDLE(hQBuffer) THEN DELETE OBJECT hQBuffer.
         IF VALID-HANDLE(hQuery)   THEN DELETE OBJECT hQuery.
