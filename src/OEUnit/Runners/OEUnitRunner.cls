@@ -211,17 +211,22 @@ CLASS OEUnit.Runners.OEUnitRunner INHERITS BaseRunner:
   ----------------------------------------------------------------------------*/
    METHOD PROTECTED VOID RunTestMethod(INPUT testMethod AS MethodInfo, INPUT paramList AS Progress.Lang.ParameterList):
        
-       IF testMethod:RequiresFixture() THEN
+       DEFINE VARIABLE fix AS Fixture NO-UNDO.
+       
+       IF testMethod:RequiresFixture() AND ShouldRun(testMethod) THEN
        DO:
            OEUnitFixtureTransaction:
-           DO TRANSACTION
-            ON ERROR UNDO, THROW:
-              RunTestMethod(INPUT testMethod, testMethod:GetFixture(), INPUT paramList).
+           DO TRANSACTION ON ERROR UNDO, THROW:
+              fix = testMethod:GetFixture().
+              RunTestMethod(INPUT testMethod, INPUT fix, INPUT paramList).
               UNDO OEUnitFixtureTransaction, LEAVE OEUnitFixtureTransaction.
            END.
+           DELETE OBJECT fix NO-ERROR.
        END.
-       ELSE 
+       ELSE
+       DO:
            RunTestMethod(INPUT testMethod, INPUT ?, INPUT paramList).
+       END.
    END METHOD.
    
    /*----------------------------------------------------------------------------
@@ -247,6 +252,7 @@ CLASS OEUnit.Runners.OEUnitRunner INHERITS BaseRunner:
         methodResult:AddError(err).
       END CATCH.
       FINALLY:
+        IF VALID-OBJECT(testFixture) THEN DELETE OBJECT testFixture.
         methodResult:SetDuration(ETIME).
         RunAfters(currentInfo:GetAnnotatedMethods(OEUnitAnnotations:After), methodResult).
         NotifyOfTestFinish(methodResult).
