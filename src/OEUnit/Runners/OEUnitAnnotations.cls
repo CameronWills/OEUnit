@@ -18,12 +18,23 @@ CLASS OEUnit.Runners.OEUnitAnnotations:
   DEFINE PUBLIC STATIC PROPERTY BeforeClass  AS CHARACTER NO-UNDO INIT "BeforeClass" GET.
   DEFINE PUBLIC STATIC PROPERTY AfterClass   AS CHARACTER NO-UNDO INIT "AfterClass" GET.
   DEFINE PUBLIC STATIC PROPERTY DataProvider AS CHARACTER NO-UNDO INIT "DataProvider" GET.
+  DEFINE PUBLIC STATIC PROPERTY Fixture      AS CHARACTER NO-UNDO INIT "Fixture" GET.
   
   /*----------------------------------------------------------------------------
     Expected Attribute for the Test Annotation.
   ----------------------------------------------------------------------------*/  
   DEFINE PUBLIC STATIC PROPERTY TestExpectedAttribute     AS CHARACTER NO-UNDO INIT "Expected" GET.
   DEFINE PUBLIC STATIC PROPERTY TestDataProviderAttribute AS CHARACTER NO-UNDO INIT "DataProvider" GET.
+  DEFINE PUBLIC STATIC PROPERTY TestFixtureAttribute      AS CHARACTER NO-UNDO INIT "Fixture" GET.
+  
+  /*----------------------------------------------------------------------------
+    Expected Attribute for the DataProvider Annotation.
+  ----------------------------------------------------------------------------*/ 
   DEFINE PUBLIC STATIC PROPERTY DataProviderNameAttribute AS CHARACTER NO-UNDO INIT "Name" GET.
+  
+  /*----------------------------------------------------------------------------
+    Expected Attribute for the Fixture Annotation.
+  ----------------------------------------------------------------------------*/ 
+  DEFINE PUBLIC STATIC PROPERTY FixtureNameAttribute      AS CHARACTER NO-UNDO INIT "Name" GET.
   
 END CLASS.
