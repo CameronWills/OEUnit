@@ -20,23 +20,26 @@ DEFINE INPUT PARAMETER testLocation AS CHARACTER NO-UNDO.
 DEFINE OUTPUT PARAMETER hasErrors AS LOGICAL NO-UNDO. 
 
 /* if the testLocation is a file, assume it's a .cls reference and use it */
-DEFINE VARIABLE classFiles AS LONGCHAR NO-UNDO.
+DEFINE TEMP-TABLE ttClassFiles NO-UNDO
+    FIELD classFile AS CHARACTER.
+     
+DEFINE BUFFER b_ClassFile FOR ttClassFiles.
 
 FILE-INFO:FILE-NAME = testLocation.
 IF SUBSTRING(FILE-INFO:FILE-TYPE, 1, 1) = "F" THEN DO:
-  classFiles = testLocation.
+    CREATE b_ClassFile.
+    b_ClassFile.classFile = testLocation.
 END.
 ELSE DO:
   /* the testLocation is a directory, create a list of test classes */
-  RUN FindClassFiles(INPUT testLocation, OUTPUT classFiles).
+  RUN FindClassFiles(INPUT testLocation).
 END.
 
 DEFINE VARIABLE i AS INTEGER NO-UNDO.
 DEFINE VARIABLE classFile AS CHARACTER NO-UNDO.
 
-REPEAT i = 1 TO NUM-ENTRIES(classFiles, "*"):
-  classFile = ENTRY(i, classFiles, "*").
-  RUN RunClassAsTest(classFile).
+FOR EACH b_ClassFile:
+  RUN RunClassAsTest(b_ClassFile.classFile).
 END.
 
 
@@ -73,42 +76,35 @@ END PROCEDURE.
 
 
   /*----------------------------------------------------------------------------
-    Searches recursively for class files in a given path. Full filenames are 
+    Searches recursively for class files in a given path. Full filenames are
     returned seperated by a star(*)
-  ----------------------------------------------------------------------------*/  
+  ----------------------------------------------------------------------------*/
 PROCEDURE FindClassFiles PRIVATE:
   DEFINE INPUT PARAMETER path AS CHARACTER NO-UNDO.
-  DEFINE OUTPUT PARAMETER classFiles AS CHARACTER NO-UNDO INIT "".
 
-  DEFINE VARIABLE childClassFiles AS LONGCHAR NO-UNDO.
   DEFINE VARIABLE directoryEntry AS CHARACTER NO-UNDO.
-    
+  
   INPUT FROM OS-DIR (path).
   REPEAT:
-        
+
     IMPORT directoryEntry.
     FILE-INFO:FILE-NAME = path
       + (IF OPSYS = "WIN32" THEN "\" ELSE "/")
       + directoryEntry.
-    
+
     CASE SUBSTRING(FILE-INFO:FILE-TYPE, 1, 1):
       WHEN "F" THEN DO:
-        IF directoryEntry MATCHES ("*.cls") THEN
-          classFiles = classFiles
-            + (IF classFiles <> "" THEN "*" ELSE "")
-            + FILE-INFO:FULL-PATHNAME.
+        IF directoryEntry MATCHES ("Test*.cls") THEN DO:            
+            CREATE b_ClassFile.
+            b_ClassFile.classFile = FILE-INFO:FULL-PATHNAME.
+        END.
       END.
       WHEN "D" THEN DO:
         IF directoryEntry <> ".." AND directoryEntry <> "." THEN DO:
-          RUN FindClassFiles(INPUT FILE-INFO:FULL-PATHNAME, OUTPUT childClassFiles).
-          IF childClassFiles <> "" AND childClassFiles <> ? THEN DO:
-            classFiles = classFiles
-              + (IF classFiles <> "" THEN "*" ELSE "")
-              + childClassFiles.
-          END.
+          RUN FindClassFiles(INPUT FILE-INFO:FULL-PATHNAME).          
         END.
       END.
     END CASE.
   END.
-    
+
 END PROCEDURE.
