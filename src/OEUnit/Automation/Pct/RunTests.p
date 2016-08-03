@@ -94,7 +94,7 @@ PROCEDURE FindClassFiles PRIVATE:
 
     CASE SUBSTRING(FILE-INFO:FILE-TYPE, 1, 1):
       WHEN "F" THEN DO:
-        IF directoryEntry MATCHES ("Test*.cls") THEN DO:            
+        IF directoryEntry MATCHES ("*.cls") THEN DO:            
             CREATE b_ClassFile.
             b_ClassFile.classFile = FILE-INFO:FULL-PATHNAME.
         END.
