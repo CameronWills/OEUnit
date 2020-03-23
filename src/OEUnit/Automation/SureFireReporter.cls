@@ -80,7 +80,7 @@ CLASS OEUnit.Automation.SureFireReporter INHERITS BaseReporter:
           + SUBSTITUTE('>~n    <failure'
               /* + ' type="??"' */
               + ' message="&1">~n',
-            currentResult:GetMessage()).
+            REPLACE(currentResult:GetMessage(), "<":U, "&lt;":U)).
 
         /* loop through the list of errors */  
         errorList = currentResult:GetErrors().
@@ -95,11 +95,10 @@ CLASS OEUnit.Automation.SureFireReporter INHERITS BaseReporter:
           END.
 
           outputXml = outputXml
-            + SUBSTITUTE('&1 at &2',
+            + REPLACE(SUBSTITUTE('&1 at &2',
                 currentResult:GetMessage(),
-                errorStack).
+                errorStack), "<":U, "&lt;":U).
         END.
-
         /* close the testcase tag */
         outputXml = outputXml
           + '~n    </failure>~n  </testcase>~n'.
